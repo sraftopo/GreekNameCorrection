@@ -1,0 +1,27 @@
+{
+    "name": "greek-name-correction",
+    "version": "2.0.0",
+    "description": "A zero-dependency Node.js library for correcting and formatting Greek names with transliteration, genitive conversion, and advanced features",
+    "main": "index.js",
+    "scripts": {
+      "test": "node test.js"
+    },
+    "keywords": [
+      "greek",
+      "names",
+      "correction",
+      "formatting",
+      "validation",
+      "normalization",
+      "transliteration",
+      "greeklish",
+      "genitive",
+      "greek-language",
+      "katharevousa"
+    ],
+    "author": "Stavros",
+    "license": "MIT",
+    "engines": {
+      "node": ">=12.0.0"
+    }
+  }
