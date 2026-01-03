@@ -548,7 +548,7 @@ MIT © Stavros
 
 ## Support
 
-For bugs, questions, and discussions please use the [GitHub Issues](https://github.com/yourusername/greek-name-correction/issues).
+For bugs, questions, and discussions please use the [GitHub Issues](https://github.com/sraftopo/greek-name-correction/issues).
 
 ## Acknowledgments
 
