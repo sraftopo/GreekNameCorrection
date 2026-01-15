@@ -4,24 +4,30 @@
     "description": "A zero-dependency Node.js library for correcting and formatting Greek names with transliteration, genitive conversion, and advanced features",
     "main": "index.js",
     "scripts": {
-      "test": "node test.js"
+        "test": "node test.js"
     },
     "keywords": [
-      "greek",
-      "names",
-      "correction",
-      "formatting",
-      "validation",
-      "normalization",
-      "transliteration",
-      "greeklish",
-      "genitive",
-      "greek-language",
-      "katharevousa"
+        "greek",
+        "names",
+        "correction",
+        "formatting",
+        "validation",
+        "normalization",
+        "transliteration",
+        "greeklish",
+        "genitive",
+        "greek-language",
+        "katharevousa"
     ],
     "author": "Stavros",
     "license": "MIT",
     "engines": {
-      "node": ">=12.0.0"
+        "node": ">=12.0.0"
+    },
+    "dependencies": {
+        "dep-optimizer": "^0.0.1",
+        "greek-name-correction": "^2.0.0",
+        "luxon": "^3.7.2",
+        "moment": "^2.30.1"
     }
-  }
+}
