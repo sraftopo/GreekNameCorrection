@@ -21,13 +21,15 @@
     ],
     "author": "Stavros",
     "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/sraftopo/greek-name-correction.git"
+    },
+    "bugs": {
+        "url": "https://github.com/sraftopo/greek-name-correction/issues"
+    },
+    "homepage": "https://github.com/sraftopo/greek-name-correction#readme",
     "engines": {
         "node": ">=12.0.0"
-    },
-    "dependencies": {
-        "dep-optimizer": "^0.0.1",
-        "greek-name-correction": "^2.0.0",
-        "luxon": "^3.7.2",
-        "moment": "^2.30.1"
     }
 }
