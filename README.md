@@ -494,7 +494,7 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 ### Development
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/greek-name-correction.git
+git clone https://github.com/sraftopo/greek-name-correction.git
 
 # Install dependencies (none currently!)
 npm install
@@ -548,7 +548,7 @@ MIT © Stavros
 
 ## Support
 
-For bugs, questions, and discussions please use the [GitHub Issues](https://github.com/yourusername/greek-name-correction/issues).
+For bugs, questions, and discussions please use the [GitHub Issues](https://github.com/sraftopo/greek-name-correction/issues).
 
 ## Acknowledgments
 

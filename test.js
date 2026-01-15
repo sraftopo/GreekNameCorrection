@@ -111,3 +111,33 @@ console.log(JSON.stringify(GreekNameCorrection([
   detectGender: true,
   convertToGenitive: true
 }), null, 2));
+
+console.log('\n=== Vocative Case Conversion ===');
+console.log(GreekNameCorrection('Γιώργος Παπαδόπουλος', {
+  convertToCase: 'vocative'
+}));
+console.log(GreekNameCorrection('Δημήτρης Νικολάου', {
+  convertToCase: 'vocative'
+}));
+console.log(GreekNameCorrection('Μαρία Κωνσταντίνου', {
+  convertToCase: 'vocative'
+}));
+console.log(GreekNameCorrection('Γιάννης Αλεξίου', {
+  convertToCase: 'vocative',
+  preserveOriginal: true
+}));
+
+console.log('\n=== Accusative Case Conversion ===');
+console.log(GreekNameCorrection('Γιώργος Παπαδόπουλος', {
+  convertToCase: 'accusative'
+}));
+console.log(GreekNameCorrection('Δημήτρης Νικολάου', {
+  convertToCase: 'accusative'
+}));
+console.log(GreekNameCorrection('Μαρία Κωνσταντίνου', {
+  convertToCase: 'accusative'
+}));
+console.log(GreekNameCorrection('Κώστας Παπαδάκης', {
+  convertToCase: 'accusative',
+  preserveOriginal: true
+}));
