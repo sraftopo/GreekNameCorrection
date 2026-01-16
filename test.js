@@ -16,7 +16,8 @@ describe('Genitive Case Conversion', () => {
       preserveOriginal: true,
       convertToGenitive: true
     });
-    expect(result.genitive).toBe('Γιώργος Παπαδόπουλου');
+    // Both first name and last name should be converted to genitive
+    expect(result.genitive).toBe('Γιώργου Παπαδόπουλου');
     expect(result.corrected).toBe('Γιώργος Παπαδόπουλος');
   });
 
@@ -25,7 +26,8 @@ describe('Genitive Case Conversion', () => {
       preserveOriginal: true,
       convertToGenitive: true
     });
-    expect(result.genitive).toBe('Μαρία Κωνσταντίνου');
+    // First name should be converted to genitive (Μαρία → Μαρίας), last name already in genitive
+    expect(result.genitive).toBe('Μαρίας Κωνσταντίνου');
     expect(result.corrected).toBe('Μαρία Κωνσταντίνου');
   });
 });
@@ -225,9 +227,10 @@ describe('Array of Objects Processing', () => {
 
 describe('Vocative Case Conversion', () => {
   test('should convert masculine name ending in -ος to vocative', () => {
+    // Γιώργος forms vocative in -ο, surname forms vocative in -ο (paroxytone surname)
     expect(GreekNameCorrection('Γιώργος Παπαδόπουλος', {
       convertToCase: 'vocative'
-    })).toBe('Γιώργε Παπαδόπουλε');
+    })).toBe('Γιώργο Παπαδόπουλο');
   });
 
   test('should convert masculine name ending in -ης to vocative', () => {

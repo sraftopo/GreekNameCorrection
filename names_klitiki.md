@@ -11,20 +11,59 @@ The vocative case is one of the five cases in Modern Greek (along with nominativ
 ### Male Names
 
 #### Names ending in **-ος** (os)
-The vocative formation for names ending in **-ος** depends on the **stress (τόνος)** position:
+The vocative formation for names ending in **-ος** depends on the **stress (τόνος)** position **and the type of name** (first name vs surname):
+
+**For First Names (Βαφτιστικά Ονόματα):**
 
 **Παροξύτονα** (Paroxytone - stressed on the penultimate syllable):
-- Remove **-ος** and add **-ε**
-- **Γιώργος** → **Γιώργε** (Γιώρ-γος, stressed on "γιώρ")
-- **Πέτρος** → **Πέτρε** (Πέ-τρος, stressed on "πέ")
+The vocative formation depends on the specific name. Some common names form vocative in **-ο**, while others form vocative in **-ε**:
+
+**Names that form vocative in -ο:**
+- **Γιώργος** → **Γιώργο** (Γιώρ-γος, stressed on "γιώρ")
+- **Νίκος** → **Νίκο**
+- **Σπύρος** → **Σπύρο**
+- **Χρήστος** → **Χρήστο**
+- **Πέτρος** → **Πέτρο** (Πέ-τρος, stressed on "πέ")
+
+**Names that form vocative in -ε:**
 - **Στέφανος** → **Στέφανε** (Στέ-φα-νος, stressed on "στέ")
+- **Κωνσταντίνος** → **Κωνσταντίνε**
+- **Αλέξανδρος** → **Αλέξανδρε**
+- **Νικόλαος** → **Νικόλαε**
+- **Αλέκος** → **Αλέκε**
+
+**Special Case - Παύλος:**
+- **Παύλος** has **two vocative forms**: **Παύλο** and **Παύλε** (both are acceptable)
 
 **Οξύτονα** (Oxytone - stressed on the last syllable):
 - The vocative **remains the same** as the nominative (no change)
 - **Νικολός** → **Νικολός** (Νι-κο-λός, stressed on "λός")
 - **Ανδρός** → **Ανδρός** (Αν-δρός, stressed on "δρός")
 
-**Note:** Most common Greek names ending in -ος are paroxytone, so they follow the **-ος → -ε** pattern.
+**For Surnames (Επώνυμα):**
+
+**Οξύτονα** (Oxytone - stressed on the last syllable):
+- Remove **-ος** and add **-ε**
+- **Ξινός** → **Ξινέ** (κύριος Ξινός → κύριε Ξινέ)
+
+**Παροξύτονα** (Paroxytone - stressed on the penultimate syllable):
+- Remove **-ος** and add **-ο** (NOT -ε)
+- **Ευαγγελάτος** → **Ευαγγελάτο** (κ. Ευαγγελάτος → κ. Ευαγγελάτο)
+- **Βενιζέλος** → **Βενιζέλο** (κ. Βενιζέλος → κ. Βενιζέλο)
+- **Παπαδάτος** → **Παπαδάτο** (κ. Παπαδάτος → κ. Παπαδάτο)
+
+**Note:** This is a crucial distinction! Paroxytone **surnames** form vocative in **-ο**, while paroxytone **first names** form vocative in **-ε**.
+
+**Diminutives and Special Endings:**
+- Names ending in **-άκος**, **-ούκος**, **-ίτσος** form vocative in **-ο**:
+  - **Αντωνάκος** → **Αντωνάκο**
+  - **Παυλάκος** → **Παυλάκο**
+  - **Γιαννούκος** → **Γιαννούκο**
+  - **Ανδρίτσος** → **Ανδρίτσο**
+
+**Some oxytone diminutive first names:**
+- **Δημητρό** → **Δημητρό** (remains unchanged)
+- **Μανολιό** → **Μανολιό** (remains unchanged)
 
 #### Names ending in **-ης** (is)
 - Remove **-ης** and add **-η**
@@ -62,14 +101,22 @@ The vocative formation for names ending in **-ος** depends on the **stress (τ
 
 ## Stress-Based Rules for -ος Names
 
-The most important rule for names ending in **-ος** is that the vocative formation depends on **where the stress (τόνος) falls**:
+The vocative formation for names ending in **-ος** depends on **where the stress (τόνος) falls** **AND whether it's a first name or surname**:
 
-| Stress Type | Greek Term | Stress Position | Vocative Formation | Examples |
-|------------|------------|----------------|-------------------|----------|
-| **Παροξύτονα** | Paroxytone | Penultimate syllable | **-ος → -ε** | Γιώργος → Γιώργε<br>Πέτρος → Πέτρε<br>Στέφανος → Στέφανε |
-| **Οξύτονα** | Oxytone | Last syllable | **-ος → -ος** (no change) | Νικολός → Νικολός<br>Ανδρός → Ανδρός |
+| Name Type | Stress Type | Greek Term | Stress Position | Vocative Formation | Examples |
+|-----------|------------|------------|----------------|-------------------|----------|
+| **First Names** | Παροξύτονα | Paroxytone | Penultimate syllable | **-ος → -ο** or **-ε** (depends on name) | Γιώργος → Γιώργο<br>Νίκος → Νίκο<br>Στέφανος → Στέφανε<br>Κωνσταντίνος → Κωνσταντίνε |
+| **First Names** | Οξύτονα | Oxytone | Last syllable | **-ος → -ος** (no change) | Νικολός → Νικολός<br>Ανδρός → Ανδρός |
+| **Surnames** | Οξύτονα | Oxytone | Last syllable | **-ος → -ε** | Ξινός → Ξινέ |
+| **Surnames** | Παροξύτονα | Paroxytone | Penultimate syllable | **-ος → -ο** | Ευαγγελάτος → Ευαγγελάτο<br>Βενιζέλος → Βενιζέλο<br>Παπαδάτος → Παπαδάτο |
 
-**Key Point:** Most common Greek names ending in -ος are **paroxytone** (stressed on the penultimate syllable), so they follow the **-ος → -ε** pattern. However, oxytone names (stressed on the last syllable) remain unchanged in the vocative.
+**Key Points:**
+- **First names** ending in -ος: 
+  - Some common names (Γιώργος, Νίκος, Σπύρος, Χρήστος, Πέτρος) form vocative in **-ο**
+  - Other names (Στέφανος, Κωνσταντίνος, Αλέξανδρος, Νικόλαος) form vocative in **-ε**
+  - Oxytone first names → unchanged
+- **Surnames** ending in -ος: paroxytone → **-ο**, oxytone → **-ε**
+- This distinction is crucial for correct vocative formation!
 
 ## Detailed Patterns
 
@@ -118,7 +165,7 @@ Vocative:    Μαρία, Ελένη, Άννα, Σοφία
 
 | Nominative (Ονομαστική) | Vocative (Κλητική) | Translation |
 |------------------------|-------------------|-------------|
-| Γιώργος | Γιώργε | George |
+| Γιώργος | Γιώργο | George |
 | Δημήτρης | Δημήτρη | Dimitris |
 | Νίκος | Νίκο | Nikos |
 | Κώστας | Κώστα | Kostas |
@@ -132,10 +179,22 @@ Vocative:    Μαρία, Ελένη, Άννα, Σοφία
 | Σπύρος | Σπύρο | Spyros |
 | Μανώλης | Μανώλη | Manolis |
 | Χρήστος | Χρήστο | Christos |
-| Πέτρος | Πέτρε | Petros |
+| Πέτρος | Πέτρο | Petros |
 | Στέφανος | Στέφανε | Stefanos |
 | Νικόλαος | Νικόλαε | Nikolaos |
 | Νικολός | Νικολός | Nikolos (oxytone - no change) |
+| Παύλος | Παύλο / Παύλε | Pavlos (both forms acceptable) |
+
+### Surnames (Επώνυμα)
+
+| Nominative (Ονομαστική) | Vocative (Κλητική) | Translation | Notes |
+|------------------------|-------------------|-------------|-------|
+| Ευαγγελάτος | Ευαγγελάτο | Evangelatos | Paroxytone surname → -ο |
+| Βενιζέλος | Βενιζέλο | Venizelos | Paroxytone surname → -ο |
+| Παπαδάτος | Παπαδάτο | Papadatos | Paroxytone surname → -ο |
+| Ξινός | Ξινέ | Xinos | Oxytone surname → -ε |
+| Αντωνάκος | Αντωνάκο | Antonakos | Diminutive → -ο |
+| Παυλάκος | Παυλάκο | Pavlakos | Diminutive → -ο |
 
 ### Female Names
 
@@ -194,45 +253,73 @@ In formal contexts, especially with titles, the vocative may be used with the ti
 
 ### Quick Reference
 
-**Masculine Names:**
-- **-ος (παροξύτονα)** → **-ε** (Γιώργος → Γιώργε, Πέτρος → Πέτρε)
+**Masculine First Names (Βαφτιστικά Ονόματα):**
+- **-ος (παροξύτονα)** → **-ο** or **-ε** (depends on specific name):
+  - **-ο**: Γιώργος → Γιώργο, Νίκος → Νίκο, Σπύρος → Σπύρο, Χρήστος → Χρήστο, Πέτρος → Πέτρο
+  - **-ε**: Στέφανος → Στέφανε, Κωνσταντίνος → Κωνσταντίνε, Αλέξανδρος → Αλέξανδρε, Νικόλαος → Νικόλαε
 - **-ος (οξύτονα)** → **-ος** (Νικολός → Νικολός, no change)
 - **-ης** → **-η** (Γιάννης → Γιάννη)
 - **-ας** → **-α** (Κώστας → Κώστα)
+- **Special:** Παύλος → Παύλο / Παύλε (both acceptable)
+
+**Masculine Surnames (Επώνυμα):**
+- **-ος (παροξύτονα)** → **-ο** (Ευαγγελάτος → Ευαγγελάτο, Βενιζέλος → Βενιζέλο, Παπαδάτος → Παπαδάτο)
+- **-ος (οξύτονα)** → **-ε** (Ξινός → Ξινέ)
+
+**Diminutives and Special Endings:**
+- **-άκος, -ούκος, -ίτσος** → **-ο** (Αντωνάκος → Αντωνάκο, Παυλάκος → Παυλάκο, Γιαννούκος → Γιαννούκο, Ανδρίτσος → Ανδρίτσο)
 
 **Feminine Names:**
 - Usually remain unchanged (Μαρία → Μαρία)
 
 **Important Notes:**
-- **For names ending in -ος, the stress position is critical:**
-  - **Παροξύτονα** (stressed on penultimate): -ος → -ε
-  - **Οξύτονα** (stressed on last syllable): -ος → -ος (no change)
+- **CRITICAL DISTINCTION:** First names and surnames follow different rules!
+  - **First names** ending in -ος (παροξύτονα): -ος → **-ε**
+  - **Surnames** ending in -ος (παροξύτονα): -ος → **-ο**
+  - **Surnames** ending in -ος (οξύτονα): -ος → **-ε**
 - The accent (τόνος) position may change in the vocative
-- Some names have irregular vocative forms
-- Diminutive forms follow their own patterns
-- Always consider the stress pattern of the name
+- Some names have irregular vocative forms (e.g., Παύλος has two forms)
+- Diminutive forms follow their own patterns (-ο ending)
+- Always consider both the stress pattern AND whether it's a first name or surname
 
 ## Implementation Notes
 
 When implementing vocative case conversion in code:
 
 1. **Check the ending** of the name first
-2. **For names ending in -ος, check the stress position:**
-   - If **oxytone** (stressed on last syllable): vocative = nominative (no change)
-   - If **paroxytone** (stressed on penultimate): vocative = replace -ος with -ε
-3. **Identify the gender** (if possible) to apply correct rules
-4. **Handle special cases** and exceptions
-5. **Preserve the accent** position correctly
-6. **Test with common names** to ensure accuracy
+2. **For names ending in -ος, check BOTH stress position AND name type:**
+   - **If it's a FIRST NAME:**
+     - If **oxytone** (stressed on last syllable): vocative = nominative (no change)
+     - If **paroxytone** (stressed on penultimate): vocative = replace -ος with -ε
+   - **If it's a SURNAME:**
+     - If **oxytone** (stressed on last syllable): vocative = replace -ος with -ε
+     - If **paroxytone** (stressed on penultimate): vocative = replace -ος with -ο
+3. **Check for special cases:**
+   - Παύλος → Παύλο or Παύλε (both acceptable, default to Παύλο)
+   - Diminutives in -άκος, -ούκος, -ίτσος → replace with -ο
+4. **Identify the gender** (if possible) to apply correct rules
+5. **Handle special cases** and exceptions
+6. **Preserve the accent** position correctly
+7. **Test with common names** to ensure accuracy
 
 ### Example Algorithm
 
 ```
 IF name ends in "-ος":
-    IF name is oxytone (stressed on last syllable):
-        vocative = name (no change)
-    ELSE (paroxytone - stressed on penultimate):
-        vocative = name[:-2] + "ε"
+    IF name is diminutive pattern (-άκος, -ούκος, -ίτσος):
+        vocative = name[:-2] + "ο"
+    ELSE IF name is special case (e.g., Παύλος):
+        vocative = handleSpecialCase(name)
+    ELSE IF name is a SURNAME:
+        IF name is oxytone (stressed on last syllable):
+            vocative = name[:-2] + "ε"
+        ELSE (paroxytone - stressed on penultimate):
+            vocative = name[:-2] + "ο"
+    ELSE (FIRST NAME):
+        IF name is oxytone (stressed on last syllable):
+            vocative = name (no change)
+        ELSE (paroxytone - stressed on penultimate):
+            vocative = name[:-2] + "ε"
 ELSE IF name ends in "-ης":
     vocative = name[:-2] + "η"
 ELSE IF name ends in "-ας":
@@ -241,7 +328,11 @@ ELSE IF name is feminine:
     vocative = name (usually unchanged)
 ```
 
-**Note:** Determining if a name is oxytone or paroxytone requires checking the stress position. Most common Greek names ending in -ος are paroxytone.
+**Note:** 
+- Determining if a name is oxytone or paroxytone requires checking the stress position
+- **CRITICAL:** Distinguishing between first names and surnames is essential for correct vocative formation
+- Most common Greek first names ending in -ος are paroxytone and form vocative in -ε
+- Most common Greek surnames ending in -ος are paroxytone and form vocative in -ο
 
 ## Related Cases
 

@@ -266,11 +266,46 @@ const commonCorrections = {
 };
 
 // Oxytone names (stressed on last syllable) - for vocative case
-// These names ending in -ος remain unchanged in vocative
+// These names ending in -ος remain unchanged in vocative (first names only)
 const oxytoneNames = ["νικολός", "ανδρός", "αναστάσιος", "αναστάσιος"];
 
 // Names that end in -ας but are actually -ης pattern (for accusative)
 const namesAsIsPattern = ["θανάσης", "ανάσης"];
+
+// Common Greek surnames ending in -ος that form vocative in -ο (paroxytone surnames)
+// These are surnames that should form vocative in -ο, not -ε
+const paroxytoneSurnames = [
+  "ευαγγελάτος", "ευγενελάτος", "βενιζέλος", "παπαδάτος", "παπαδόπουλος",
+  "γεωργίου", "κωνσταντίνου", "δημήτριου", "αλεξίου", "νικολάου",
+  "παπαγεωργίου", "παπακωνσταντίνου", "παπαδήμου", "παπαδάκης",
+  "ανδρέου", "ιωάννου", "βασιλείου", "αθανασίου", "παναγιώτου",
+  "χατζηγιάννη", "χατζηκωνσταντίνου", "χατζηπαναγιώτου"
+];
+
+// Oxytone surnames (stressed on last syllable) that form vocative in -ε
+// These are surnames that should form vocative in -ε (not remain unchanged like oxytone first names)
+const oxytoneSurnames = ["ξινός"];
+
+// Diminutive patterns that form vocative in -ο
+const diminutiveVocativePatterns = ["άκος", "ούκος", "ίτσος"];
+
+// First names ending in -ος that form vocative in -ο (not -ε)
+// These are typically disyllabic or common short names
+const vocativeInO_FirstNames = [
+  "γιώργος", "νίκος", "σπύρος", "χρήστος", "πέτρος"
+];
+
+// First names ending in -ος that form vocative in -ε
+// These are typically longer names (3+ syllables)
+const vocativeInE_FirstNames = [
+  "κωνσταντίνος", "αλέξανδρος", "στέφανος", "νικόλαος"
+];
+
+// Special cases for vocative (names with irregular or multiple forms)
+const specialVocativeCases = {
+  "παύλος": "παύλο", // Παύλος can be Παύλο or Παύλε, default to Παύλο
+  "παυλος": "παυλο"
+};
 
 module.exports = {
   greeklishToGreekMap,
@@ -281,5 +316,11 @@ module.exports = {
   katharevousaMap,
   commonCorrections,
   oxytoneNames,
-  namesAsIsPattern
+  namesAsIsPattern,
+  paroxytoneSurnames,
+  oxytoneSurnames,
+  diminutiveVocativePatterns,
+  vocativeInO_FirstNames,
+  vocativeInE_FirstNames,
+  specialVocativeCases
 };

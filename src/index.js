@@ -128,7 +128,7 @@ function GreekNameCorrection(input, options = {}) {
     // Convert to genitive case (before re-attaching title)
     let genitiveForm = null;
     if (config.convertToGenitive) {
-      genitiveForm = convertToGenitive(processed);
+      genitiveForm = convertToGenitive(processed, config);
     }
 
     // Convert to case (vocative or accusative) - before re-attaching title

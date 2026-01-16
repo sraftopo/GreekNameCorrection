@@ -1,36 +1,53 @@
 // cases.js
 "use strict";
 
-const { oxytoneNames, namesAsIsPattern } = require("./constants");
+const {
+  oxytoneNames,
+  namesAsIsPattern,
+  paroxytoneSurnames,
+  oxytoneSurnames,
+  diminutiveVocativePatterns,
+  vocativeInO_FirstNames,
+  vocativeInE_FirstNames,
+  specialVocativeCases
+} = require("./constants");
 const { isGreekParticle } = require("./utils");
 
 // Convert to genitive case
-function convertToGenitive(name) {
+// Converts all name parts (first name and last name), but skips particles
+function convertToGenitive(name, config = {}) {
   const parts = name.split(/\s+/);
-  const lastName = parts[parts.length - 1];
-  const lowerLast = lastName.toLowerCase();
+  const processedParts = parts.map((part) => {
+    const lowerPart = part.toLowerCase();
 
-  let genitive = lastName;
+    // Skip particles - they don't change in genitive
+    if (config.handleParticles && isGreekParticle(lowerPart)) {
+      return part;
+    }
 
-  // Male genitive rules
-  if (lowerLast.endsWith("ος")) {
-    genitive = lastName.slice(0, -2) + "ου";
-  } else if (lowerLast.endsWith("ας")) {
-    genitive = lastName.slice(0, -2) + "α";
-  } else if (lowerLast.endsWith("ης")) {
-    genitive = lastName.slice(0, -2) + "η";
-  }
-  // Female names often stay the same or change differently
-  else if (lowerLast.endsWith("ου")) {
-    genitive = lastName; // Already genitive
-  } else if (lowerLast.endsWith("α")) {
-    genitive = lastName.slice(0, -1) + "ας";
-  } else if (lowerLast.endsWith("η")) {
-    genitive = lastName.slice(0, -1) + "ης";
-  }
+    let genitive = part;
 
-  parts[parts.length - 1] = genitive;
-  return parts.join(" ");
+    // Male genitive rules
+    if (lowerPart.endsWith("ος")) {
+      genitive = part.slice(0, -2) + "ου";
+    } else if (lowerPart.endsWith("ας")) {
+      genitive = part.slice(0, -2) + "α";
+    } else if (lowerPart.endsWith("ης")) {
+      genitive = part.slice(0, -2) + "η";
+    }
+    // Female names often stay the same or change differently
+    else if (lowerPart.endsWith("ου")) {
+      genitive = part; // Already genitive
+    } else if (lowerPart.endsWith("α")) {
+      genitive = part.slice(0, -1) + "ας";
+    } else if (lowerPart.endsWith("η")) {
+      genitive = part.slice(0, -1) + "ης";
+    }
+
+    return genitive;
+  });
+
+  return processedParts.join(" ");
 }
 
 // Check if a name is oxytone (stressed on last syllable)
@@ -88,11 +105,70 @@ function isOxytone(name) {
   return false;
 }
 
+// Check if a name part is likely a surname
+// Heuristic: if it's the last part of a multi-part name, or if it's in the known surnames list
+function isLikelySurname(part, index, totalParts) {
+  const lowerPart = part.toLowerCase();
+  
+  // If it's the last part and there are multiple parts, it's likely a surname
+  if (index === totalParts - 1 && totalParts > 1) {
+    return true;
+  }
+  
+  // Check against known surnames lists
+  if (paroxytoneSurnames.includes(lowerPart) || oxytoneSurnames.includes(lowerPart)) {
+    return true;
+  }
+  
+  return false;
+}
+
+// Check if a surname is oxytone (for vocative purposes)
+// For surnames ending in -ος, if they form vocative in -ε, they are oxytone
+function isOxytoneSurname(part) {
+  const lowerPart = part.toLowerCase();
+  
+  // Check explicit list first (normalize for comparison)
+  const normalizedPart = lowerPart.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  for (const surname of oxytoneSurnames) {
+    const normalizedSurname = surname.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    if (normalizedPart === normalizedSurname || normalizedPart.includes(normalizedSurname)) {
+      return true;
+    }
+  }
+  
+  // Check if it ends with -ός (accented ό + ς) - this is a clear oxytone marker
+  if (part.length >= 2) {
+    const secondLastChar = part[part.length - 2];
+    const lastChar = part[part.length - 1];
+    if ((secondLastChar === "ό" || secondLastChar === "Ό") && lastChar === "ς") {
+      return true;
+    }
+  }
+  
+  // For surnames, if the last syllable has an accent, it might be oxytone
+  // Check if there's an accent in the last two characters
+  const lastTwo = part.slice(-2);
+  const hasAccentInLastSyllable = /[άέήίόύώΆΈΉΊΌΎΏ]/.test(lastTwo);
+  
+  // Use the general isOxytone function as fallback
+  return isOxytone(part) || hasAccentInLastSyllable;
+}
+
+// Check if a name matches a diminutive pattern
+function isDiminutivePattern(lowerPart) {
+  return diminutiveVocativePatterns.some((pattern) =>
+    lowerPart.endsWith(pattern)
+  );
+}
+
 // Convert to vocative case
 // Converts all name parts (first name and last name), but skips particles
 function convertToVocative(name, config) {
   const parts = name.split(/\s+/);
-  const processedParts = parts.map((part) => {
+  const totalParts = parts.length;
+  
+  const processedParts = parts.map((part, index) => {
     const lowerPart = part.toLowerCase();
 
     // Skip particles - they don't change in vocative
@@ -102,14 +178,61 @@ function convertToVocative(name, config) {
 
     let vocative = part;
 
+    // Check for special cases first (e.g., Παύλος)
+    if (specialVocativeCases[lowerPart]) {
+      const specialForm = specialVocativeCases[lowerPart];
+      // Preserve original capitalization
+      if (part[0] === part[0].toUpperCase()) {
+        return specialForm.charAt(0).toUpperCase() + specialForm.slice(1);
+      }
+      return specialForm;
+    }
+
     // Handle masculine names ending in -ος
     if (lowerPart.endsWith("ος")) {
-      if (isOxytone(part)) {
-        // Oxytone: remains unchanged
-        vocative = part;
-      } else {
-        // Paroxytone: -ος → -ε
+      // Check if it's a diminutive pattern first
+      if (isDiminutivePattern(lowerPart)) {
+        // Diminutives: -ος → -ο
+        vocative = part.slice(0, -2) + "ο";
+      }
+      // Check explicit list of first names that form vocative in -ο
+      else if (vocativeInO_FirstNames.includes(lowerPart)) {
+        // These first names form vocative in -ο
+        vocative = part.slice(0, -2) + "ο";
+      }
+      // Check explicit list of first names that form vocative in -ε
+      else if (vocativeInE_FirstNames.includes(lowerPart)) {
+        // These first names form vocative in -ε
         vocative = part.slice(0, -2) + "ε";
+      }
+      // Check if it's likely a surname (by position or explicit list)
+      else if (isLikelySurname(part, index, totalParts)) {
+        // For surnames, check if oxytone
+        if (isOxytoneSurname(part)) {
+          // Oxytone surname: -ος → -ε
+          vocative = part.slice(0, -2) + "ε";
+        } else {
+          // Paroxytone surname: -ος → -ο
+          vocative = part.slice(0, -2) + "ο";
+        }
+      }
+      // It's a first name (not in explicit lists) - default behavior
+      else {
+        if (isOxytone(part)) {
+          // Oxytone first name: remains unchanged
+          vocative = part;
+        } else {
+          // Paroxytone first name: default to -ο for common short names, -ε for longer names
+          // Default to -ο for disyllabic names, -ε for longer
+          const syllableCount = (part.match(/[αεηιουωάέήίόύώ]/gi) || []).length;
+          if (syllableCount <= 2) {
+            // Disyllabic: -ος → -ο
+            vocative = part.slice(0, -2) + "ο";
+          } else {
+            // Longer names: -ος → -ε
+            vocative = part.slice(0, -2) + "ε";
+          }
+        }
       }
     }
     // Handle masculine names ending in -ης
