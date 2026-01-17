@@ -205,7 +205,14 @@ function detectGender(fullname) {
 function splitNameParts(fullname) {
   const parts = fullname
     .split(/\s+/)
-    .filter((p) => !isGreekParticle(p.toLowerCase()) && !titles.includes(p));
+    .filter((p) => {
+      const lowerP = p.toLowerCase();
+      return !isGreekParticle(lowerP) && 
+             !titles.includes(p) && 
+             !titles.some(t => t.toLowerCase() === lowerP) &&
+             lowerP !== "κ." && 
+             lowerP !== "κα";
+    });
 
   if (parts.length === 0) return { firstName: "", lastName: "" };
   if (parts.length === 1) return { firstName: parts[0], lastName: "" };

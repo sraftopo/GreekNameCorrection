@@ -97,6 +97,125 @@ describe('Title Handling', () => {
   });
 });
 
+describe('Automatic General Title Addition', () => {
+  test('should add κ. for male names when addGeneralTitle is enabled', () => {
+    const result = GreekNameCorrection('Γιώργος Παπαδόπουλος', {
+      addGeneralTitle: true
+    });
+    expect(result).toBe('κ. Γιώργος Παπαδόπουλος');
+    expect(result).toContain('κ.');
+    expect(result).not.toContain('Κ.');
+  });
+
+  test('should add κα for female names when addGeneralTitle is enabled', () => {
+    const result = GreekNameCorrection('Μαρία Κωνσταντίνου', {
+      addGeneralTitle: true
+    });
+    expect(result).toBe('κα Μαρία Κωνσταντίνου');
+    expect(result).toContain('κα');
+    expect(result).not.toContain('Κα');
+  });
+
+  test('should add lowercase general titles (κ. and κα)', () => {
+    // Use names with surnames ending in -ος for male (not -ου which is genitive and detected as female)
+    const maleResult = GreekNameCorrection('Νίκος Παπαδόπουλος', {
+      addGeneralTitle: true
+    });
+    expect(maleResult).toContain('κ.');
+    expect(maleResult).not.toContain('Κ.');
+
+    const femaleResult = GreekNameCorrection('Ελένη Παπαδοπούλου', {
+      addGeneralTitle: true
+    });
+    expect(femaleResult).toContain('κα');
+    expect(femaleResult).not.toContain('Κα');
+  });
+
+  test('should not add general title when existing title is present', () => {
+    const result = GreekNameCorrection('Δρ. Γιώργος Παπαδόπουλος', {
+      addGeneralTitle: true,
+      preserveOriginal: true
+    });
+    expect(result.title).toBe('Δρ');
+    expect(result.corrected).toContain('Δρ');
+    expect(result.corrected).not.toContain('κ.');
+    expect(result.corrected).not.toContain('κα');
+  });
+
+  test('should work with preserveOriginal option', () => {
+    const result = GreekNameCorrection('Γιάννης Παπαδόπουλος', {
+      addGeneralTitle: true,
+      preserveOriginal: true
+    });
+    expect(result.corrected).toBe('κ. Γιάννης Παπαδόπουλος');
+    expect(result.title).toBe('κ.');
+    expect(result.original).toBe('Γιάννης Παπαδόπουλος');
+  });
+
+  test('should work with vocative case conversion', () => {
+    const result = GreekNameCorrection('Γιώργος Παπαδόπουλος', {
+      addGeneralTitle: true,
+      convertToCase: 'vocative'
+    });
+    expect(result).toBe('κ. Γιώργο Παπαδόπουλο');
+    expect(result).toContain('κ.');
+  });
+
+  test('should work with accusative case conversion', () => {
+    // Use a name with surname ending in -ος for correct male detection
+    const result = GreekNameCorrection('Δημήτρης Παπαδόπουλος', {
+      addGeneralTitle: true,
+      convertToCase: 'accusative'
+    });
+    expect(result).toBe('κ. Δημήτρη Παπαδόπουλο');
+    expect(result).toContain('κ.');
+  });
+
+  test('should work with vocative and preserveOriginal', () => {
+    const result = GreekNameCorrection('Μαρία Κωνσταντίνου', {
+      addGeneralTitle: true,
+      convertToCase: 'vocative',
+      preserveOriginal: true
+    });
+    expect(result.corrected).toBe('κα Μαρία Κωνσταντίνου');
+    expect(result.vocative).toBe('κα Μαρία Κωνσταντίνου');
+    expect(result.title).toBe('κα');
+  });
+
+  test('should not add title when gender is unknown', () => {
+    // Names that don't match typical gender patterns
+    const result = GreekNameCorrection('Test Name', {
+      addGeneralTitle: true
+    });
+    // Should not add title if gender detection fails
+    expect(result).not.toContain('κ.');
+    expect(result).not.toContain('κα');
+  });
+
+  test('should work with genitive case conversion', () => {
+    const result = GreekNameCorrection('Γιώργος Παπαδόπουλος', {
+      addGeneralTitle: true,
+      convertToGenitive: true,
+      preserveOriginal: true
+    });
+    expect(result.corrected).toBe('κ. Γιώργος Παπαδόπουλος');
+    expect(result.genitive).toBeDefined();
+    expect(result.title).toBe('κ.');
+  });
+
+  test('should work with array of names', () => {
+    const results = GreekNameCorrection([
+      'Γιώργος Παπαδόπουλος',
+      'Μαρία Κωνσταντίνου'
+    ], {
+      addGeneralTitle: true
+    });
+    expect(Array.isArray(results)).toBe(true);
+    expect(results[0]).toBe('κ. Γιώργος Παπαδόπουλος');
+    expect(results[1]).toBe('κα Μαρία Κωνσταντίνου');
+  });
+});
+
 describe('Name Corrections', () => {
   test('should suggest correction for common misspelling', () => {
     const result = GreekNameCorrection('γιοργος παπαδοπουλος', {
