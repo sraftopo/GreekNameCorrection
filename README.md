@@ -13,7 +13,7 @@ A powerful, zero-dependency Node.js library for correcting, formatting, and vali
 🔄 **Transliteration** - Greeklish ↔ Greek ↔ Latin  
 📝 **Smart Formatting** - Proper capitalization and syntax  
 👔 **Title Support** - Handles Greek honorifics (Δρ., Καθ., etc.)  
-🔀 **Genitive Conversion** - Automatic του/της forms  
+🔀 **Case Conversion** - Genitive, vocative, and accusative forms  
 🎯 **Gender Detection** - Identifies gender from name endings  
 📊 **Statistics** - Comprehensive name analysis  
 🔍 **Diminutive Detection** - Recognizes nickname patterns  
@@ -124,6 +124,56 @@ GreekNameCorrection('Γιώργος Παπαδόπουλος', {
 //     corrected: "Γιώργος Παπαδόπουλος",
 //     genitive: "Γιώργος Παπαδόπουλου"
 //   }
+```
+
+### Vocative Case Conversion
+```javascript
+// Convert to vocative case (for addressing someone)
+GreekNameCorrection('Γιώργος Παπαδόπουλος', {
+  convertToCase: 'vocative'
+});
+// → "Γιώργο Παπαδόπουλο"
+
+// With preserveOriginal to get both forms
+GreekNameCorrection('Γιάννης Αλεξίου', {
+  convertToCase: 'vocative',
+  preserveOriginal: true
+});
+// → {
+//     corrected: "Γιάννης Αλεξίου",
+//     vocative: "Γιάννη Αλεξίου"
+//   }
+
+// Feminine names usually remain unchanged
+GreekNameCorrection('Μαρία Κωνσταντίνου', {
+  convertToCase: 'vocative'
+});
+// → "Μαρία Κωνσταντίνου"
+```
+
+### Accusative Case Conversion
+```javascript
+// Convert to accusative case (for direct objects)
+GreekNameCorrection('Γιώργος Παπαδόπουλος', {
+  convertToCase: 'accusative'
+});
+// → "Γιώργο Παπαδόπουλο"
+
+// With preserveOriginal to get both forms
+GreekNameCorrection('Κώστας Παπαδάκης', {
+  convertToCase: 'accusative',
+  preserveOriginal: true
+});
+// → {
+//     corrected: "Κώστας Παπαδάκης",
+//     accusative: "Κώστα Παπαδάκη"
+//   }
+
+// Feminine names usually remain unchanged
+GreekNameCorrection('Μαρία Κωνσταντίνου', {
+  convertToCase: 'accusative'
+});
+// → "Μαρία Κωνσταντίνου"
 ```
 
 ### Title Handling
@@ -258,6 +308,7 @@ GreekNameCorrection(input, options)
 | `removeExtraSpaces` | `boolean` | `true` | Remove extra whitespace |
 | `handleParticles` | `boolean` | `true` | Handle Greek particles (του/της/των) |
 | `convertToGenitive` | `boolean` | `false` | Convert to genitive case |
+| `convertToCase` | `string\|null` | `null` | Convert to case: `'vocative'` or `'accusative'` |
 | `transliterate` | `string\|null` | `null` | Transliteration mode: `'greeklish-to-greek'`, `'greek-to-latin'`, `'greek-to-greeklish'` |
 | `detectDiminutive` | `boolean` | `false` | Detect diminutive/nickname forms |
 | `handleTitles` | `boolean` | `true` | Extract and format titles |
@@ -286,6 +337,8 @@ When `preserveOriginal: true`, returns an object with:
   parts?: Object,           // Name parts (if splitNames)
   diminutive?: Array,       // Diminutive info (if detectDiminutive)
   genitive?: string,        // Genitive form (if convertToGenitive)
+  vocative?: string,        // Vocative form (if convertToCase: 'vocative')
+  accusative?: string,      // Accusative form (if convertToCase: 'accusative')
   sortKey?: string,         // Sort key (if generateSortKey)
   statistics?: Object,      // Name statistics (if statistics)
   wasCorrected?: boolean,   // If corrections were applied
@@ -448,6 +501,20 @@ const recipient = GreekNameCorrection(name, {
 });
 
 console.log(`Προς: ${recipient.genitive}`);
+
+// Use vocative case for addressing someone
+const addressee = GreekNameCorrection('Γιώργος Παπαδόπουλος', {
+  convertToCase: 'vocative'
+});
+
+console.log(`Αγαπητέ ${addressee},`); // "Αγαπητέ Γιώργο Παπαδόπουλο,"
+
+// Use accusative case for direct objects
+const object = GreekNameCorrection('Δημήτρης Νικολάου', {
+  convertToCase: 'accusative'
+});
+
+console.log(`Είδα τον ${object}`); // "Είδα τον Δημήτρη Νικολάου"
 ```
 
 ### 5. Gender-Based Processing
@@ -513,7 +580,7 @@ The test suite covers:
 - Array processing
 - Object processing
 - All transliteration modes
-- Genitive conversion
+- Case conversions (genitive, vocative, accusative)
 - Title handling
 - Diminutive detection
 - Gender detection
@@ -530,7 +597,7 @@ The test suite covers:
 
 ### Version 2.0.0
 - ✨ Added transliteration support (Greeklish ↔ Greek ↔ Latin)
-- ✨ Added genitive case conversion
+- ✨ Added case conversion (genitive, vocative, accusative)
 - ✨ Added diminutive detection
 - ✨ Added title/honorific support
 - ✨ Added name correction suggestions
