@@ -218,6 +218,26 @@ function splitNameParts(fullname) {
   };
 }
 
+// Add general title (Κ. for men, Κα for women) if no title exists
+function addGeneralTitleIfMissing(nameWithoutTitle) {
+  if (!nameWithoutTitle || nameWithoutTitle.trim() === "") {
+    return null;
+  }
+
+  // Detect gender from the name
+  const gender = detectGender(nameWithoutTitle);
+
+  // Add appropriate title based on gender
+  if (gender === "male") {
+    return "Κ.";
+  } else if (gender === "female") {
+    return "Κα";
+  }
+
+  // If gender is unknown, don't add a title
+  return null;
+}
+
 module.exports = {
   capitalizeGreekName,
   isGreekParticle,
@@ -229,5 +249,6 @@ module.exports = {
   generateSortKey,
   generateStatistics,
   detectGender,
-  splitNameParts
+  splitNameParts,
+  addGeneralTitleIfMissing
 };

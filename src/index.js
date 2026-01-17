@@ -23,7 +23,8 @@ const {
   generateSortKey,
   generateStatistics,
   detectGender,
-  splitNameParts
+  splitNameParts,
+  addGeneralTitleIfMissing
 } = require("./utils");
 
 /**
@@ -54,7 +55,8 @@ function GreekNameCorrection(input, options = {}) {
     recognizeKatharevousa: false,
     databaseSafe: false,
     generateSortKey: false,
-    statistics: false
+    statistics: false,
+    addGeneralTitle: false
   };
 
   const config = { ...defaults, ...options };
@@ -131,7 +133,21 @@ function GreekNameCorrection(input, options = {}) {
       genitiveForm = convertToGenitive(processed, config);
     }
 
-    // Convert to case (vocative or accusative) - before re-attaching title
+    // Database-safe output
+    if (config.databaseSafe) {
+      processed = makeDatabaseSafe(processed);
+    }
+
+    // Add general title (Κ. or Κα) if no title exists and option is enabled
+    // This is done after processing so gender detection works on the final name
+    if (config.addGeneralTitle && !extractedTitle) {
+      const generalTitle = addGeneralTitleIfMissing(processed);
+      if (generalTitle) {
+        extractedTitle = generalTitle;
+      }
+    }
+
+    // Convert to case (vocative or accusative) - after adding general title if needed
     let caseForm = null;
     if (config.convertToCase) {
       if (config.convertToCase === "vocative") {
@@ -139,18 +155,13 @@ function GreekNameCorrection(input, options = {}) {
       } else if (config.convertToCase === "accusative") {
         caseForm = convertToAccusative(processed, config);
       }
-      // Re-attach title to case form if it was extracted
+      // Re-attach title to case form if it was extracted or added
       if (extractedTitle && caseForm) {
         caseForm = extractedTitle + " " + caseForm;
       }
     }
 
-    // Database-safe output
-    if (config.databaseSafe) {
-      processed = makeDatabaseSafe(processed);
-    }
-
-    // Re-attach title if it was extracted
+    // Re-attach title if it was extracted or added
     if (extractedTitle) {
       processed = extractedTitle + " " + processed;
     }
