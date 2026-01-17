@@ -522,7 +522,13 @@ The test suite covers:
 
 ## Changelog
 
-### Version 2.0.0 (Current)
+### Version 2.1.0 (Current)
+- 🏗️ **Modular Architecture** - Complete codebase refactoring into logical modules
+- 📦 **Improved Structure** - Separated into `transliteration.js`, `cases.js`, `validation.js`, `utils.js`, `constants.js`
+- 🔧 **Better Maintainability** - Clean separation of concerns for easier testing and development
+- ✨ **Enhanced Code Organization** - Each module has a single, clear responsibility
+
+### Version 2.0.0
 - ✨ Added transliteration support (Greeklish ↔ Greek ↔ Latin)
 - ✨ Added genitive case conversion
 - ✨ Added diminutive detection
