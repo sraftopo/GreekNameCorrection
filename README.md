@@ -634,7 +634,10 @@ The test suite covers:
 
 ## Changelog
 
-### Version 2.1.1 (Current)
+### Version 2.1.2 (Current)
+- 🐛 **Bug Fix** - Fixed `splitNameParts` to correctly filter out general titles (κ. and κα) from name parts
+
+### Version 2.1.1
 - ✨ **Automatic General Title Addition** - Added `addGeneralTitle` option to automatically add general titles (κ. for men, κα for women) when no title exists
 
 ### Version 2.1.0
