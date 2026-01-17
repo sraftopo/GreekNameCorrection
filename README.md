@@ -13,6 +13,7 @@ A powerful, zero-dependency Node.js library for correcting, formatting, and vali
 🔄 **Transliteration** - Greeklish ↔ Greek ↔ Latin  
 📝 **Smart Formatting** - Proper capitalization and syntax  
 👔 **Title Support** - Handles Greek honorifics (Δρ., Καθ., etc.)  
+🎩 **Auto Title Addition** - Automatically adds general titles (Κ. for men, Κα for women)  
 🔀 **Case Conversion** - Genitive, vocative, and accusative forms  
 🎯 **Gender Detection** - Identifies gender from name endings  
 📊 **Statistics** - Comprehensive name analysis  
@@ -188,6 +189,39 @@ GreekNameCorrection('δρ. γιώργος παπαδόπουλος', {
 //   }
 ```
 
+### Automatic General Title Addition
+```javascript
+// Add general title (κ. for men, κα for women) if no title exists
+// Titles are always lowercase
+GreekNameCorrection('Γιώργος Παπαδόπουλος', {
+  addGeneralTitle: true
+});
+// → "κ. Γιώργος Παπαδόπουλος"
+
+GreekNameCorrection('Μαρία Κωνσταντίνου', {
+  addGeneralTitle: true
+});
+// → "κα Μαρία Κωνσταντίνου"
+
+// Names with existing titles are not modified
+GreekNameCorrection('Δρ. Γιώργος Παπαδόπουλος', {
+  addGeneralTitle: true
+});
+// → "Δρ. Γιώργος Παπαδόπουλος"
+
+// Works with preserveOriginal option
+GreekNameCorrection('Ελένη Γεωργίου', {
+  addGeneralTitle: true,
+  preserveOriginal: true
+});
+// → {
+//     corrected: "κα Ελένη Γεωργίου",
+//     original: "Ελένη Γεωργίου",
+//     title: "κα",
+//     isValid: true
+//   }
+```
+
 ### Name Corrections
 ```javascript
 GreekNameCorrection('γιοργος παπαδοπουλος', {
@@ -312,6 +346,7 @@ GreekNameCorrection(input, options)
 | `transliterate` | `string\|null` | `null` | Transliteration mode: `'greeklish-to-greek'`, `'greek-to-latin'`, `'greek-to-greeklish'` |
 | `detectDiminutive` | `boolean` | `false` | Detect diminutive/nickname forms |
 | `handleTitles` | `boolean` | `true` | Extract and format titles |
+| `addGeneralTitle` | `boolean` | `false` | Automatically add general title (κ. for men, κα for women) if no title exists (always lowercase) |
 | `suggestCorrections` | `boolean` | `false` | Suggest corrections for misspellings |
 | `recognizeKatharevousa` | `boolean` | `false` | Convert archaic Greek forms |
 | `databaseSafe` | `boolean` | `false` | Remove problematic characters |
@@ -355,6 +390,14 @@ The library recognizes and properly formats the following Greek titles:
 - **Political**: Πρωθυπουργός, Υπουργός, Βουλευτής, Δήμαρχος, Περιφερειάρχης
 - **Religious**: Αρχιεπίσκοπος, Μητροπολίτης, Επίσκοπος, Πατήρ
 - **Military**: Στρατηγός, Ταξίαρχος, Συνταγματάρχης, Αντισυνταγματάρχης
+
+### Automatic General Title Addition
+
+When `addGeneralTitle: true` is enabled, the library automatically adds general titles based on detected gender:
+- **κ.** (κύριος) for male names
+- **κα** (κυρία) for female names
+
+**Note:** General titles are always added in lowercase format. This feature only adds titles when no existing title is detected, ensuring that professional or academic titles are preserved.
 
 ## Common Name Corrections
 
@@ -400,6 +443,7 @@ const result = GreekNameCorrection('dr giorgos tou papa', {
   transliterate: 'greeklish-to-greek',
   preserveOriginal: true,
   handleTitles: true,
+  addGeneralTitle: true,
   handleParticles: true,
   suggestCorrections: true,
   detectGender: true,
@@ -582,6 +626,7 @@ The test suite covers:
 - All transliteration modes
 - Case conversions (genitive, vocative, accusative)
 - Title handling
+- Automatic general title addition
 - Diminutive detection
 - Gender detection
 - Statistics generation

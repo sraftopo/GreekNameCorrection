@@ -218,7 +218,7 @@ function splitNameParts(fullname) {
   };
 }
 
-// Add general title (Κ. for men, Κα for women) if no title exists
+// Add general title (κ. for men, κα for women) if no title exists
 function addGeneralTitleIfMissing(nameWithoutTitle) {
   if (!nameWithoutTitle || nameWithoutTitle.trim() === "") {
     return null;
@@ -227,11 +227,11 @@ function addGeneralTitleIfMissing(nameWithoutTitle) {
   // Detect gender from the name
   const gender = detectGender(nameWithoutTitle);
 
-  // Add appropriate title based on gender
+  // Add appropriate title based on gender (always lowercase)
   if (gender === "male") {
-    return "Κ.";
+    return "κ.";
   } else if (gender === "female") {
-    return "Κα";
+    return "κα";
   }
 
   // If gender is unknown, don't add a title
