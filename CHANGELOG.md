@@ -5,6 +5,19 @@ All notable changes to the GreekNameCorrection project will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.1] - 2025-01-XX
+
+### ✨ Added
+
+- **Automatic General Title Addition**: New `addGeneralTitle` option that automatically adds general titles (κ. for men, κα for women) when no existing title is detected
+  - Titles are always added in lowercase format
+  - Only adds titles when no other title exists (preserves professional/academic titles)
+  - Works seamlessly with all other features including case conversions
+
+### 🔧 Changed
+
+- General titles are always lowercase (κ. and κα) to match Greek conventions
+
 ## [2.1.0] - 2025-01-XX
 
 ### 🏗️ Major Refactoring: Modular Architecture
@@ -134,6 +147,7 @@ Major feature release introducing transliteration, genitive conversion, and adva
 
 ---
 
+[2.1.1]: https://github.com/sraftopo/GreekNameCorrection/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/sraftopo/GreekNameCorrection/compare/v2.0...v2.1.0
 [2.0.0]: https://github.com/sraftopo/GreekNameCorrection/releases/tag/v2.0
 [1.0.0]: https://github.com/sraftopo/GreekNameCorrection/releases/tag/v1.0.0

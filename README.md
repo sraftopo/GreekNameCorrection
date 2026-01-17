@@ -634,7 +634,10 @@ The test suite covers:
 
 ## Changelog
 
-### Version 2.1.0 (Current)
+### Version 2.1.1 (Current)
+- ✨ **Automatic General Title Addition** - Added `addGeneralTitle` option to automatically add general titles (κ. for men, κα for women) when no title exists
+
+### Version 2.1.0
 - 🏗️ **Modular Architecture** - Complete codebase refactoring into logical modules
 - 📦 **Improved Structure** - Separated into `transliteration.js`, `cases.js`, `validation.js`, `utils.js`, `constants.js`
 - 🔧 **Better Maintainability** - Clean separation of concerns for easier testing and development
