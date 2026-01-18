@@ -3,6 +3,7 @@
     "version": "2.1.2",
     "description": "A zero-dependency Node.js library for correcting and formatting Greek names with transliteration, genitive conversion, and advanced features",
     "main": "src/index.js",
+    "types": "index.d.ts",
     "scripts": {
         "test": "jest",
         "test:watch": "jest --watch",
@@ -37,6 +38,7 @@
     "files": [
         "src/",
         "index.js",
+        "index.d.ts",
         "README.md",
         "LICENSE"
     ],
