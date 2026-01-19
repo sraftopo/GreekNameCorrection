@@ -585,18 +585,60 @@ While designed for Node.js, the library can be bundled for browser use with tool
 
 ## TypeScript
 
-TypeScript definitions can be added. Example:
-```typescript
-declare function GreekNameCorrection(
-  input: string | string[] | object | object[],
-  options?: {
-    jsonKey?: string;
-    outputKey?: string;
-    preserveOriginal?: boolean;
-    // ... other options
-  }
-): string | string[] | object | object[];
+Full TypeScript support is included! The library comes with comprehensive type definitions for all features.
+
+### Installation
+
+TypeScript definitions are automatically included when you install the package:
+
+```bash
+npm install greek-name-correction
 ```
+
+### Usage
+
+```typescript
+import GreekNameCorrection = require('greek-name-correction');
+// or
+import GreekNameCorrection from 'greek-name-correction';
+
+// TypeScript will provide full type checking and IntelliSense
+const result = GreekNameCorrection('γιάννης παπαδόπουλος', {
+  preserveOriginal: true,
+  detectGender: true,
+  convertToGenitive: true
+});
+
+// result is typed as GreekNameCorrectionResult
+console.log(result.corrected); // string
+console.log(result.gender);     // 'male' | 'female' | 'unknown' | undefined
+console.log(result.genitive);   // string | undefined
+```
+
+### Type Definitions
+
+All types are exported for use in your TypeScript projects:
+
+```typescript
+import {
+  GreekNameCorrectionOptions,
+  GreekNameCorrectionResult,
+  Gender,
+  NameParts,
+  DiminutiveInfo,
+  NameStatistics,
+  TransliterationMode,
+  CaseConversion
+} from 'greek-name-correction';
+```
+
+### Features
+
+- ✅ **Full type safety** - All function signatures are typed
+- ✅ **IntelliSense support** - Autocomplete for all options
+- ✅ **Type inference** - Return types are automatically inferred
+- ✅ **Overloads** - Separate overloads for string, array, and object inputs
+- ✅ **JSDoc comments** - Inline documentation in your IDE
 
 ## Contributing
 
@@ -634,7 +676,10 @@ The test suite covers:
 
 ## Changelog
 
-### Version 2.1.2 (Current)
+### Version 2.2.0 (Current)
+- ✨ **TypeScript Support** - Added comprehensive TypeScript definitions (`index.d.ts`) with full type safety, IntelliSense support, and exported types
+
+### Version 2.1.2
 - 🐛 **Bug Fix** - Fixed `splitNameParts` to correctly filter out general titles (κ. and κα) from name parts
 
 ### Version 2.1.1

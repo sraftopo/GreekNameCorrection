@@ -5,6 +5,31 @@ All notable changes to the GreekNameCorrection project will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2025-01-XX
+
+### ✨ Added
+
+- **TypeScript Support**: Comprehensive TypeScript definitions (`index.d.ts`) with full type safety and IntelliSense support
+  - Function signatures with proper type annotations
+  - Overloads for different input types (string, string[], object, object[])
+  - Exported types: `GreekNameCorrectionOptions`, `GreekNameCorrectionResult`, `Gender`, `NameParts`, `DiminutiveInfo`, `NameStatistics`, `TransliterationMode`, `CaseConversion`
+  - JSDoc comments for IDE support and inline documentation
+  - Automatic type inference for return values
+  - Zero runtime impact (compile-time only)
+
+### 📦 Changed
+
+- **Package Configuration**: 
+  - Added `"types": "index.d.ts"` field to `package.json` for automatic TypeScript support
+  - Added `index.d.ts` to `files` array to ensure it's included in npm package
+
+### ✅ Verified
+
+- **Backward Compatibility**: 100% compatible with existing JavaScript code
+- **Type Safety**: All function signatures properly typed
+- **No Breaking Changes**: Existing code works without modifications
+- **Performance**: Zero runtime impact
+
 ## [2.1.2] - 2025-01-XX
 
 ### 🐛 Fixed
@@ -155,6 +180,7 @@ Major feature release introducing transliteration, genitive conversion, and adva
 
 ---
 
+[2.2.0]: https://github.com/sraftopo/GreekNameCorrection/compare/v2.1.2...v2.2.0
 [2.1.2]: https://github.com/sraftopo/GreekNameCorrection/compare/v2.1.1...v2.1.2
 [2.1.1]: https://github.com/sraftopo/GreekNameCorrection/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/sraftopo/GreekNameCorrection/compare/v2.0...v2.1.0
