@@ -35,8 +35,12 @@
     "engines": {
         "node": ">=12.0.0"
     },
+    "bin": {
+        "greek-name-correction": "./bin/greek-name-correction.js"
+    },
     "files": [
         "src/",
+        "bin/",
         "index.js",
         "index.d.ts",
         "README.md",

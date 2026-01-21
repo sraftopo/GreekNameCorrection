@@ -55,6 +55,89 @@ console.log(result);
 // }
 ```
 
+## Command-Line Interface (CLI)
+
+The library includes a CLI tool for use from the command line.
+
+### Installation
+
+To use the CLI globally:
+```bash
+npm install -g greek-name-correction
+```
+
+Or use it directly with `npx`:
+```bash
+npx greek-name-correction -name "NAME" [OPTIONS]
+```
+
+### Usage
+
+```bash
+# Basic usage
+greek-name-correction -name "γιώργος παπαδόπουλος"
+# → "Γιώργος Παπαδόπουλος"
+
+# Positional argument (name without -name flag)
+greek-name-correction "Ραυτόπουλος Σταύρος" -convertToCase vocative
+# → "Ραυτόπουλε Σταύρο"
+
+# With options
+greek-name-correction -name "Γιώργος Παπαδόπουλος" -convertToCase vocative
+# → "Γιώργο Παπαδόπουλο"
+
+# JSON output with preserveOriginal
+greek-name-correction -name "Μαρία Κωνσταντίνου" -detectGender -addGeneralTitle -preserveOriginal -json
+# → JSON object with all details
+```
+
+### Available Options
+
+| Option | Description |
+|--------|-------------|
+| `-name, --name <name>` | Name to correct (required if not provided as positional argument) |
+| `-convertToCase <case>` | Convert to case: `vocative` or `accusative` |
+| `-transliterate <type>` | Transliteration: `greeklish-to-greek`, `greek-to-latin`, `greek-to-greeklish` |
+| `-convertToGenitive` | Convert to genitive case |
+| `-preserveOriginal` | Return object with original and corrected name |
+| `-detectGender` | Detect gender from name |
+| `-detectDiminutive` | Detect diminutive forms |
+| `-suggestCorrections` | Suggest corrections for common misspellings |
+| `-recognizeKatharevousa` | Recognize and convert Katharevousa forms |
+| `-databaseSafe` | Make output database-safe |
+| `-generateSortKey` | Generate sort key (accent-free) |
+| `-statistics` | Generate name statistics |
+| `-addGeneralTitle` | Add general title (κ./κα) based on gender |
+| `-handleTitles` | Handle titles (default: true) |
+| `-handleParticles` | Handle Greek particles (default: true) |
+| `-strictMode` | Enable strict mode |
+| `-json` | Output result as JSON |
+| `-help, -h` | Show help message |
+| `-version, -v` | Show version |
+
+### Examples
+
+```bash
+# Vocative case conversion
+greek-name-correction -name "Γιώργος Παπαδόπουλος" -convertToCase vocative
+
+# Accusative case conversion
+greek-name-correction -name "Δημήτρης Νικολάου" -convertToCase accusative
+
+# Transliteration
+greek-name-correction -name "giorgos papadopoulos" -transliterate greeklish-to-greek
+
+# Multiple options with JSON output
+greek-name-correction -name "Μαρία Κωνσταντίνου" -detectGender -addGeneralTitle -preserveOriginal -json
+
+# Get help
+greek-name-correction -help
+```
+
+**Note for Windows/PowerShell users:** If you encounter issues with Greek characters in quotes, try:
+- Using single quotes: `greek-name-correction -name 'Γιώργος Παπαδόπουλος'`
+- Or use a file input: `echo "Γιώργος Παπαδόπουλος" | greek-name-correction`
+
 ## Usage Examples
 
 ### Basic String Correction
