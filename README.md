@@ -23,7 +23,7 @@ A powerful, zero-dependency Node.js library for correcting, formatting, and vali
 🔤 **Sort Keys** - Accent-free sorting support  
 ✅ **Validation** - Greek name pattern validation  
 🔧 **Flexible I/O** - Supports strings, arrays, and objects  
-✨ **Accent Addition** - Automatically adds accents to unaccented Greek names (one accent per word)
+✨ **Accent Addition** - Automatically adds accents to unaccented Greek names using comprehensive name dictionary (1,100+ names) with intelligent fallback rules
 
 ## Installation
 ```bash
@@ -314,6 +314,7 @@ GreekNameCorrection('Ελένη Γεωργίου', {
 ### Accent Addition
 ```javascript
 // Add accents to unaccented Greek names (one accent per word)
+// Uses comprehensive name dictionary for accurate placement
 GreekNameCorrection('γιωργος παπαδοπουλος', {
   addAccents: true
 });
@@ -346,7 +347,16 @@ GreekNameCorrection('δημήτρης νικολάου', {
   addAccents: true
 });
 // → "Δημήτρης Νικολάου"
+
+// Uses name dictionary for accurate accent placement
+// Falls back to heuristic rules for unknown names
+GreekNameCorrection('γιαννης γεωργιου', {
+  addAccents: true
+});
+// → "Γιάννης Γεωργίου"
 ```
+
+**Note**: The `addAccents` feature (v2.2.1+) uses a comprehensive name dictionary built from `generate_greek_names.js` with over 1,100 Greek names. It first checks the dictionary for accurate accent placement, then falls back to intelligent heuristic rules based on word endings for names not in the dictionary.
 
 ### Name Corrections
 ```javascript
@@ -473,7 +483,7 @@ GreekNameCorrection(input, options)
 | `detectDiminutive` | `boolean` | `false` | Detect diminutive/nickname forms |
 | `handleTitles` | `boolean` | `true` | Extract and format titles |
 | `addGeneralTitle` | `boolean` | `false` | Automatically add general title (κ. for men, κα for women) if no title exists (always lowercase) |
-| `addAccents` | `boolean` | `false` | Add accents to firstname and lastname (one accent per word) |
+| `addAccents` | `boolean` | `false` | Add accents to firstname and lastname (one accent per word). Uses comprehensive name dictionary (1,100+ names) for accurate placement, with intelligent fallback rules |
 | `suggestCorrections` | `boolean` | `false` | Suggest corrections for misspellings |
 | `recognizeKatharevousa` | `boolean` | `false` | Convert archaic Greek forms |
 | `databaseSafe` | `boolean` | `false` | Remove problematic characters |
@@ -805,7 +815,12 @@ The test suite covers:
 
 ## Changelog
 
-### Version 2.2.0 (Current)
+### Version 2.2.1 (Current)
+- 🔧 **Enhanced Accent Addition** - Improved `addAccents` feature with comprehensive name dictionary support. Now uses actual Greek name dictionaries from `generate_greek_names.js` for accurate accent placement on common names. Includes CLI support with `-addAccents` flag.
+- ✨ **Name Dictionary** - Built-in dictionary with 1,100+ Greek names (first names, surnames, compound surnames) for accurate accent placement
+- 🐛 **CLI Fix** - Added missing `-addAccents` flag to command-line interface
+
+### Version 2.2.0
 - ✨ **Accent Addition Feature** - Added `addAccents` option to automatically add accents to unaccented Greek names (one accent per word). Intelligently places accents based on Greek accentuation rules and word endings.
 - ✨ **TypeScript Support** - Added comprehensive TypeScript definitions (`index.d.ts`) with full type safety, IntelliSense support, and exported types
 

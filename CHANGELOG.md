@@ -5,6 +5,34 @@ All notable changes to the GreekNameCorrection project will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.1] - 2025-01-XX
+
+### ✨ Enhanced
+- **Accent Addition Feature**: Improved `addAccents` option with comprehensive name dictionary support
+  - Built-in dictionary with 1,100+ Greek names (first names, surnames, compound surnames)
+  - Uses name dictionaries from `generate_greek_names.js` for accurate accent placement
+  - Three-tier lookup strategy: Common Corrections → Name Dictionary → Heuristic Rules
+  - Lazy initialization and caching for optimal performance
+
+### ✨ Added
+- **CLI Support**: Added `-addAccents` flag to command-line interface
+- **Name Dictionary**: Comprehensive dictionary including:
+  - ~100 male first names
+  - ~100 female first names
+  - ~500 patronymic surnames (roots × suffixes)
+  - ~30 occupational surnames
+  - ~30 geographical surnames
+  - ~300 compound surnames
+  - ~50 common surnames
+
+### 🐛 Fixed
+- **CLI**: Fixed missing `-addAccents` flag in command-line interface
+- **Capitalization**: Fixed capitalization preservation when using dictionary lookups
+
+### 📚 Documentation
+- Updated README.md with enhanced accent addition examples
+- Added CLI documentation for `-addAccents` flag
+
 ## [2.2.0] - 2025-01-XX
 
 ### ✨ Added
@@ -180,6 +208,7 @@ Major feature release introducing transliteration, genitive conversion, and adva
 
 ---
 
+[2.2.1]: https://github.com/sraftopo/GreekNameCorrection/compare/v2.2.0...v2.2.1
 [2.2.0]: https://github.com/sraftopo/GreekNameCorrection/compare/v2.1.2...v2.2.0
 [2.1.2]: https://github.com/sraftopo/GreekNameCorrection/compare/v2.1.1...v2.1.2
 [2.1.1]: https://github.com/sraftopo/GreekNameCorrection/compare/v2.1.0...v2.1.1
