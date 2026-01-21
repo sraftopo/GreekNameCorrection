@@ -402,3 +402,157 @@ describe('Accusative Case Conversion', () => {
     expect(result.accusative).toBe('Κώστα Παπαδάκη');
   });
 });
+
+describe('Accent Addition', () => {
+  test('should add accents to unaccented masculine name', () => {
+    const result = GreekNameCorrection('γιωργος παπαδοπουλος', {
+      addAccents: true
+    });
+    // Check that accents were added (at least one accent mark)
+    const accentCount = (result.match(/[άέήίόύώΆΈΉΊΌΎΏ]/g) || []).length;
+    expect(accentCount).toBeGreaterThan(0);
+    // Check that it's capitalized properly
+    expect(result[0]).toBe(result[0].toUpperCase());
+  });
+
+  test('should add accents to unaccented feminine name', () => {
+    const result = GreekNameCorrection('μαρια κωνσταντινου', {
+      addAccents: true
+    });
+    // Check that accents were added
+    const accentCount = (result.match(/[άέήίόύώΆΈΉΊΌΎΏ]/g) || []).length;
+    expect(accentCount).toBeGreaterThan(0);
+    expect(result[0]).toBe(result[0].toUpperCase());
+  });
+
+  test('should preserve existing accents when addAccents is enabled', () => {
+    const result = GreekNameCorrection('Γιώργος Παπαδόπουλος', {
+      addAccents: true
+    });
+    expect(result).toBe('Γιώργος Παπαδόπουλος');
+    // Should still have the same accents
+    expect(result).toContain('ώ');
+    expect(result).toContain('ό');
+  });
+
+  test('should add accents with preserveOriginal option', () => {
+    const result = GreekNameCorrection('νικος αλεξιου', {
+      addAccents: true,
+      preserveOriginal: true
+    });
+    expect(result.original).toBe('νικος αλεξιου');
+    // Check that accents were added to corrected version
+    const accentCount = (result.corrected.match(/[άέήίόύώΆΈΉΊΌΎΏ]/g) || []).length;
+    expect(accentCount).toBeGreaterThan(0);
+  });
+
+  test('should add only one accent per word', () => {
+    const result = GreekNameCorrection('δημητρης νικολαου', {
+      addAccents: true
+    });
+    // Split into words and count accents per word
+    const words = result.split(/\s+/);
+    words.forEach(word => {
+      const accentCount = (word.match(/[άέήίόύώΆΈΉΊΌΎΏ]/g) || []).length;
+      // Each word should have at most one accent
+      expect(accentCount).toBeLessThanOrEqual(1);
+    });
+    // Total should have at least 2 accents (one per name word)
+    const totalAccents = (result.match(/[άέήίόύώΆΈΉΊΌΎΏ]/g) || []).length;
+    expect(totalAccents).toBeGreaterThanOrEqual(2);
+  });
+
+  test('should work with names that have mixed accented and unaccented words', () => {
+    const result = GreekNameCorrection('γιωργος Παπαδόπουλος', {
+      addAccents: true
+    });
+    // The unaccented word should get an accent
+    const words = result.split(/\s+/);
+    const firstWordAccents = (words[0].match(/[άέήίόύώΆΈΉΊΌΎΏ]/g) || []).length;
+    expect(firstWordAccents).toBeGreaterThan(0);
+    // The already accented word should keep its accent
+    expect(words[1]).toContain('ό');
+  });
+
+  test('should work with titles', () => {
+    const result = GreekNameCorrection('δρ. γιωργος παπαδοπουλος', {
+      addAccents: true,
+      handleTitles: true
+    });
+    expect(result).toContain('Δρ');
+    // Check that accents were added to name words
+    const accentCount = (result.match(/[άέήίόύώΆΈΉΊΌΎΏ]/g) || []).length;
+    expect(accentCount).toBeGreaterThan(0);
+  });
+
+  test('should work with particles', () => {
+    const result = GreekNameCorrection('γιωργος του παπαδοπουλου', {
+      addAccents: true,
+      handleParticles: true
+    });
+    expect(result).toContain('του');
+    // Check that accents were added to name words (not particles)
+    const accentCount = (result.match(/[άέήίόύώΆΈΉΊΌΎΏ]/g) || []).length;
+    expect(accentCount).toBeGreaterThan(0);
+  });
+
+  test('should work with addGeneralTitle option', () => {
+    const result = GreekNameCorrection('γιωργος παπαδοπουλος', {
+      addAccents: true,
+      addGeneralTitle: true
+    });
+    expect(result).toContain('κ.');
+    // Check that accents were added
+    const accentCount = (result.match(/[άέήίόύώΆΈΉΊΌΎΏ]/g) || []).length;
+    expect(accentCount).toBeGreaterThan(0);
+  });
+
+  test('should work with array of names', () => {
+    const results = GreekNameCorrection([
+      'γιωργος παπαδοπουλος',
+      'μαρια κωνσταντινου'
+    ], {
+      addAccents: true
+    });
+    expect(Array.isArray(results)).toBe(true);
+    // Check that accents were added to both names
+    results.forEach(result => {
+      const accentCount = (result.match(/[άέήίόύώΆΈΉΊΌΎΏ]/g) || []).length;
+      expect(accentCount).toBeGreaterThan(0);
+    });
+  });
+
+  test('should work with transliteration and accent addition', () => {
+    const result = GreekNameCorrection('giorgos papadopoulos', {
+      transliterate: 'greeklish-to-greek',
+      addAccents: true
+    });
+    // Check that accents were added after transliteration
+    const accentCount = (result.match(/[άέήίόύώΆΈΉΊΌΎΏ]/g) || []).length;
+    expect(accentCount).toBeGreaterThan(0);
+  });
+
+  test('should handle short names correctly', () => {
+    const result = GreekNameCorrection('νικος', {
+      addAccents: true
+    });
+    // Short name should get an accent
+    const accentCount = (result.match(/[άέήίόύώΆΈΉΊΌΎΏ]/g) || []).length;
+    expect(accentCount).toBeGreaterThan(0);
+    expect(result[0]).toBe(result[0].toUpperCase());
+  });
+
+  test('should work with combined features', () => {
+    const result = GreekNameCorrection('γιωργος παπαδοπουλος', {
+      addAccents: true,
+      preserveOriginal: true,
+      detectGender: true,
+      convertToGenitive: true
+    });
+    // Check that accents were added
+    const accentCount = (result.corrected.match(/[άέήίόύώΆΈΉΊΌΎΏ]/g) || []).length;
+    expect(accentCount).toBeGreaterThan(0);
+    expect(result.gender).toBe('male');
+    expect(result.genitive).toBeDefined();
+  });
+});

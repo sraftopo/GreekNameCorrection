@@ -165,6 +165,11 @@ export interface GreekNameCorrectionOptions {
    * Add general title (κ. for men, κα for women) if no title exists (default: false)
    */
   addGeneralTitle?: boolean;
+
+  /**
+   * Add accents to firstname and lastname (one accent per word) (default: false)
+   */
+  addAccents?: boolean;
 }
 
 /**

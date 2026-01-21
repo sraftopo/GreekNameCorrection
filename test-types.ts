@@ -46,7 +46,8 @@ const result5 = GreekNameCorrection('γιάννης παπαδόπουλος', {
   databaseSafe: true,
   generateSortKey: true,
   statistics: true,
-  addGeneralTitle: true
+  addGeneralTitle: true,
+  addAccents: true
 });
 
 // Test 6: Type checking for result properties

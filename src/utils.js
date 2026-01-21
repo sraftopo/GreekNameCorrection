@@ -245,9 +245,180 @@ function addGeneralTitleIfMissing(nameWithoutTitle) {
   return null;
 }
 
+// Remove accents from a string (same as generate_greek_names.js)
+function removeAccents(str) {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
 // Check if a word already has an accent
 function hasAccent(word) {
   return /[άέήίόύώΆΈΉΊΌΎΏ]/.test(word);
+}
+
+// Build name dictionary from accented name lists (based on generate_greek_names.js)
+function buildNameDictionary() {
+  const maleFirstNames = [
+    'Γιώργος', 'Γιάννης', 'Νίκος', 'Δημήτρης', 'Κώστας', 'Ανδρέας', 'Παναγιώτης',
+    'Μιχάλης', 'Βασίλης', 'Χρήστος', 'Θανάσης', 'Σταύρος', 'Αντώνης', 'Πέτρος',
+    'Σπύρος', 'Μάνος', 'Λευτέρης', 'Γρηγόρης', 'Αλέξανδρος', 'Κυριάκος',
+    'Κωνσταντίνος', 'Θεόδωρος', 'Ηλίας', 'Απόστολος', 'Νικόλαος', 'Χαράλαμπος',
+    'Ευάγγελος', 'Άγγελος', 'Ιωάννης', 'Σωτήρης', 'Τάσος', 'Μάρκος', 'Φώτης',
+    'Παύλος', 'Αθανάσιος', 'Μιλτιάδης', 'Θεμιστοκλής', 'Περικλής',
+    'Αριστείδης', 'Ευστάθιος', 'Ιάκωβος', 'Λάζαρος', 'Παρασκευάς', 'Σάββας',
+    'Βησσαρίων', 'Διονύσης', 'Δομήνικος', 'Ζαχαρίας', 'Θεοφάνης', 'Ιγνάτιος',
+    'Κλήμης', 'Λουκάς', 'Ματθαίος', 'Νεκτάριος', 'Ξενοφών', 'Ορέστης',
+    'Παντελής', 'Ραφαήλ', 'Σεραφείμ', 'Τιμόθεος', 'Φίλιππος', 'Χαρίτων',
+    'Ψαλτής', 'Ωρίων', 'Αλκιβιάδης', 'Βάϊος', 'Γαβριήλ', 'Δαμιανός',
+    'Εμμανουήλ', 'Ζήνων', 'Θεοδόσιος', 'Ιεροθέος', 'Καλλίνικος', 'Λεωνίδας',
+    'Μελέτιος', 'Νικηφόρος', 'Οδυσσέας', 'Πλάτων', 'Ρήγας', 'Στέφανος',
+    'Τρύφων', 'Φιλήμων', 'Χριστόφορος', 'Αγαμέμνων', 'Βενιαμίν', 'Γεδεών',
+    'Δανιήλ', 'Ελευθέριος', 'Ζηνόβιος', 'Θεόκλητος', 'Ισίδωρος', 'Κύριλλος',
+    'Λάμπρος', 'Μάξιμος', 'Νεόφυτος', 'Ονήσιμος', 'Παϊσιος', 'Ρωμανός'
+  ];
+
+  const femaleFirstNames = [
+    'Μαρία', 'Ελένη', 'Κατερίνα', 'Σοφία', 'Άννα', 'Βασιλική', 'Δήμητρα',
+    'Ιωάννα', 'Χριστίνα', 'Αικατερίνη', 'Παναγιώτα', 'Αθηνά', 'Ευαγγελία',
+    'Δέσποινα', 'Μαργαρίτα', 'Κωνσταντίνα', 'Αλεξάνδρα', 'Φωτεινή', 'Γεωργία',
+    'Νίκη', 'Ειρήνη', 'Ελισάβετ', 'Αναστασία', 'Θεοδώρα', 'Αγγελική',
+    'Παρασκευή', 'Σταυρούλα', 'Ευτυχία', 'Χαρίκλεια', 'Βασιλεία', 'Μάρθα',
+    'Χαρά', 'Ελπίδα', 'Πηνελόπη', 'Καλλιόπη', 'Ουρανία', 'Εύη', 'Ζωή',
+    'Θάλεια', 'Ισμήνη', 'Κλειώ', 'Λητώ', 'Μελίνα', 'Νατάσα', 'Ολυμπία',
+    'Ρένα', 'Σέβη', 'Τατιάνα', 'Φανή', 'Χρύσα', 'Αγλαΐα', 'Βάσω',
+    'Γλυκερία', 'Δανάη', 'Ευδοκία', 'Ζηνοβία', 'Θεανώ', 'Ιφιγένεια',
+    'Κασσάνδρα', 'Λαμπρινή', 'Μελπομένη', 'Νεφέλη', 'Περσεφόνη', 'Ρόδη',
+    'Σμαράγδα', 'Τερψιχόρη', 'Φαίδρα', 'Χρυσάνθη', 'Αγάπη', 'Βιργινία',
+    'Γαλάτεια', 'Διονυσία', 'Ερμιόνη', 'Ζέφη', 'Θεοδοσία', 'Ιουλία',
+    'Καλλιρόη', 'Ληδά', 'Μυρτώ', 'Νόρα', 'Πολυξένη', 'Ρωξάνη',
+    'Στέλλα', 'Τριανταφυλλιά', 'Φλώρα', 'Χλόη', 'Αρετή', 'Βέρα',
+    'Γιούλη', 'Δάφνη', 'Εύα', 'Ζέτα', 'Θεώνη', 'Ίρις'
+  ];
+
+  const surnameRoots = [
+    'Γεώργ', 'Νικολά', 'Δημήτρ', 'Κωνσταντίν', 'Ιωάνν', 'Βασιλεί', 'Αθανασί',
+    'Μιχαήλ', 'Παναγιώτ', 'Αντων', 'Χριστοδούλ', 'Σταματί', 'Ευαγγέλ',
+    'Θεοδώρ', 'Ανδρέ', 'Πέτρ', 'Παύλ', 'Σπυρίδ', 'Χαράλαμπ', 'Αποστόλ',
+    'Ηλί', 'Γρηγόρ', 'Μάρκ', 'Φώτ', 'Αλεξάνδρ', 'Κυριάκ', 'Λεωνίδ',
+    'Περικλ', 'Θεμιστοκλ', 'Αριστείδ', 'Διονύσ', 'Ζαχαρί', 'Ματθαί',
+    'Στεφάν', 'Τάκ', 'Μανώλ', 'Τζών', 'Σωτήρ', 'Λάζαρ', 'Χρήστ',
+    'Παρασκευ', 'Σάββ', 'Νεκτάρ', 'Φίλιππ', 'Ραφαήλ', 'Γαβριήλ',
+    'Δαμιαν', 'Εμμανουήλ', 'Θεοδόσ', 'Καλλίνικ', 'Μελέτ', 'Ξενοφών',
+    'Ορέστ', 'Πλάτων', 'Σεραφείμ', 'Τιμόθε', 'Φιλήμον', 'Χριστοφόρ'
+  ];
+
+  const surnamePatronymicSuffixes = [
+    { suffix: 'ίου', gender: 'Both' },
+    { suffix: 'όπουλος', gender: 'M' },
+    { suffix: 'οπούλου', gender: 'F' },
+    { suffix: 'ίδης', gender: 'M' },
+    { suffix: 'ίδου', gender: 'F' },
+    { suffix: 'άκης', gender: 'M' },
+    { suffix: 'άκη', gender: 'F' },
+    { suffix: 'έλης', gender: 'M' },
+    { suffix: 'έλη', gender: 'F' },
+    { suffix: 'όγλου', gender: 'Both' }
+  ];
+
+  const occupationalSurnames = [
+    'Οικονόμου', 'Παπάς', 'Παππάς', 'Ιερομονάχου', 'Διδασκάλου', 'Γραμματικού',
+    'Καπετάνιος', 'Στρατηγός', 'Ναύτης', 'Αγρότης', 'Ψαράς', 'Κτηνοτρόφος',
+    'Βοσκός', 'Μαραγκός', 'Σιδεράς', 'Χαλκιάς', 'Χρυσοχόος', 'Αργυροπούλος',
+    'Ράπτης', 'Υφαντής', 'Κτίστης', 'Ξυλουργός', 'Ελαιοπώλης', 'Καφετζής',
+    'Μαγειρίτσης', 'Κρεοπώλης', 'Αρτοποιός', 'Φούρναρης', 'Ζαχαροπλάστης',
+    'Μπακάλης', 'Παντοπώλης', 'Ταβερνάρης', 'Ξενοδόχος', 'Γιατρός',
+    'Φαρμακοποιός', 'Δικηγόρος', 'Συμβολαιογράφος', 'Μηχανικός', 'Τεχνίτης'
+  ];
+
+  const geographicalSurnames = [
+    'Αθηναίος', 'Θεσσαλονικεύς', 'Πατρινός', 'Ηρακλειώτης', 'Βολιώτης',
+    'Λαρισαίος', 'Ιωαννίτης', 'Κερκυραίος', 'Ροδίτης', 'Χανιώτης',
+    'Ρεθυμνιώτης', 'Κρητικός', 'Πελοποννήσιος', 'Θηβαίος', 'Κορίνθιος',
+    'Σπαρτιάτης', 'Αργείος', 'Μεσσήνιος', 'Αρκάς', 'Αχαιός',
+    'Ηλείος', 'Μακεδών', 'Ήπειρώτης', 'Θεσσαλός', 'Στερεοελλαδίτης',
+    'Θρακιώτης', 'Νησιώτης', 'Μικρασιάτης', 'Πόντιος', 'Κύπριος',
+    'Αλεξανδρινός', 'Σμυρναίος', 'Κωνσταντινουπολίτης', 'Τραπεζούντιος', 'Σινώπης'
+  ];
+
+  const dictionary = {};
+
+  // Add first names
+  [...maleFirstNames, ...femaleFirstNames].forEach(name => {
+    const unaccented = removeAccents(name).toLowerCase();
+    dictionary[unaccented] = name;
+  });
+
+  // Generate patronymic surnames
+  surnameRoots.forEach(root => {
+    surnamePatronymicSuffixes.forEach(({suffix}) => {
+      const surname = root + suffix;
+      const unaccented = removeAccents(surname).toLowerCase();
+      dictionary[unaccented] = surname;
+    });
+  });
+
+  // Add occupational surnames
+  occupationalSurnames.forEach(name => {
+    const unaccented = removeAccents(name).toLowerCase();
+    dictionary[unaccented] = name;
+  });
+
+  // Add geographical surnames
+  geographicalSurnames.forEach(name => {
+    const unaccented = removeAccents(name).toLowerCase();
+    dictionary[unaccented] = name;
+  });
+
+  // Add common compound surnames (like in generate_greek_names.js)
+  const surnameCompoundPrefixes = [
+    'Παπα', 'Καρα', 'Μαυρο', 'Χατζη', 'Κοντο', 'Μακρο', 'Μικρο',
+    'Παλαιο', 'Νεο', 'Σιδερο', 'Χρυσο', 'Αργυρο', 'Καλο', 'Μεγαλο',
+    'Τρια', 'Πενταρ', 'Εξαρχ', 'Επταρ', 'Εννιαρ', 'Δεκαρ'
+  ];
+
+  // Generate some common compound surnames
+  surnameCompoundPrefixes.forEach(prefix => {
+    surnameRoots.slice(0, 10).forEach(root => {
+      surnamePatronymicSuffixes.slice(0, 3).forEach(({suffix}) => {
+        const surname = prefix + root.toLowerCase() + suffix;
+        const unaccented = removeAccents(surname).toLowerCase();
+        dictionary[unaccented] = surname;
+      });
+    });
+  });
+
+  // Add some very common surnames manually (including genitive forms)
+  const commonSurnames = [
+    'Παπαδόπουλος', 'Παπαδοπούλου', 'Γεωργίου', 'Κωνσταντίνου',
+    'Δημητρίου', 'Αλεξίου', 'Νικολάου', 'Βασιλείου', 'Αθανασίου',
+    'Παναγιώτου', 'Χατζηγιάννη', 'Παπαδάκης', 'Αντωνίου',
+    'Ιωάννου', 'Μιχαήλ', 'Μιχαήλου', 'Σταματίου', 'Ευαγγέλου',
+    'Θεοδώρου', 'Ανδρέου', 'Πέτρου', 'Παύλου', 'Σπυρίδου',
+    'Χαράλαμπου', 'Αποστόλου', 'Ηλίου', 'Γρηγόριου', 'Μάρκου',
+    'Φώτου', 'Κυριάκου', 'Λεωνίδου', 'Στεφάνου', 'Μανώλη',
+    'Σωτήρη', 'Σωτήρου', 'Λαζάρου', 'Χρήστου', 'Παρασκευά',
+    'Σάββα', 'Νεκταρίου', 'Ραφαήλ', 'Γαβριήλ', 'Δαμιανού',
+    'Εμμανουήλ', 'Θεοδόσιου', 'Καλλινίκου', 'Μελετίου', 'Ξενοφώντος',
+    'Ορέστη', 'Ορέστου', 'Σεραφείμ', 'Τιμοθέου', 'Φιλήμονος',
+    'Χριστοφόρου'
+  ];
+
+  commonSurnames.forEach(name => {
+    const unaccented = removeAccents(name).toLowerCase();
+    dictionary[unaccented] = name;
+  });
+
+  return dictionary;
+}
+
+// Cache the name dictionary
+let nameDictionary = null;
+
+// Get name dictionary (lazy initialization)
+function getNameDictionary() {
+  if (!nameDictionary) {
+    nameDictionary = buildNameDictionary();
+  }
+  return nameDictionary;
 }
 
 // Add accent to a single Greek word (ensures only one accent per word)
@@ -261,15 +432,26 @@ function addAccentsToGreekWord(word) {
     return word;
   }
 
-  // Check if word is in commonCorrections map (which has accented versions)
+  // First, try commonCorrections map
   const lowerWord = word.toLowerCase();
   if (commonCorrections[lowerWord]) {
-    // Preserve original capitalization
     const accented = commonCorrections[lowerWord];
     if (word[0] === word[0].toUpperCase()) {
       return capitalizeGreekName(accented);
     }
     return accented;
+  }
+
+  // Then, try name dictionary (based on generate_greek_names.js)
+  const dict = getNameDictionary();
+  const unaccentedLower = removeAccents(word).toLowerCase();
+  if (dict[unaccentedLower]) {
+    const accented = dict[unaccentedLower];
+    // Preserve original capitalization pattern
+    if (word[0] === word[0].toUpperCase()) {
+      return capitalizeGreekName(accented);
+    }
+    return accented.toLowerCase();
   }
 
   // Map of unaccented to accented vowels

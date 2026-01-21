@@ -62,6 +62,9 @@ function parseArgs() {
     else if (arg === "-addGeneralTitle" || arg === "--addGeneralTitle") {
       options.addGeneralTitle = true;
     }
+    else if (arg === "-addAccents" || arg === "--addAccents") {
+      options.addAccents = true;
+    }
     else if (arg === "-handleTitles" || arg === "--handleTitles") {
       options.handleTitles = true;
     }
@@ -117,6 +120,7 @@ Options:
   -generateSortKey                  Generate sort key (accent-free)
   -statistics                       Generate name statistics
   -addGeneralTitle                  Add general title (κ./κα) based on gender
+  -addAccents                       Add accents to firstname and lastname (one accent per word)
   -handleTitles                     Handle titles (default: true)
   -handleParticles                  Handle Greek particles (default: true)
   -strictMode                       Enable strict mode
@@ -130,6 +134,7 @@ Examples:
   greek-name-correction -name "giorgos papadopoulos" -transliterate greeklish-to-greek
   greek-name-correction -name "Γιώργος Παπαδόπουλος" -convertToGenitive -preserveOriginal -json
   greek-name-correction -name "Μαρία Κωνσταντίνου" -detectGender -addGeneralTitle
+  greek-name-correction -name "γιωργος παπαδοπουλος" -addAccents
 `);
 }
 
