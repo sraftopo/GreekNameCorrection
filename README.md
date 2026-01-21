@@ -22,7 +22,8 @@ A powerful, zero-dependency Node.js library for correcting, formatting, and vali
 💾 **Database-Safe** - SQL-ready output  
 🔤 **Sort Keys** - Accent-free sorting support  
 ✅ **Validation** - Greek name pattern validation  
-🔧 **Flexible I/O** - Supports strings, arrays, and objects
+🔧 **Flexible I/O** - Supports strings, arrays, and objects  
+✨ **Accent Addition** - Automatically adds accents to unaccented Greek names (one accent per word)
 
 ## Installation
 ```bash
@@ -108,6 +109,7 @@ greek-name-correction -name "Μαρία Κωνσταντίνου" -detectGender 
 | `-generateSortKey` | Generate sort key (accent-free) |
 | `-statistics` | Generate name statistics |
 | `-addGeneralTitle` | Add general title (κ./κα) based on gender |
+| `-addAccents` | Add accents to firstname and lastname (one accent per word) |
 | `-handleTitles` | Handle titles (default: true) |
 | `-handleParticles` | Handle Greek particles (default: true) |
 | `-strictMode` | Enable strict mode |
@@ -129,6 +131,10 @@ greek-name-correction -name "giorgos papadopoulos" -transliterate greeklish-to-g
 
 # Multiple options with JSON output
 greek-name-correction -name "Μαρία Κωνσταντίνου" -detectGender -addGeneralTitle -preserveOriginal -json
+
+# Add accents to unaccented names
+greek-name-correction -name "γιωργος παπαδοπουλος" -addAccents
+# → "Γιώργος Παπαδόπουλος"
 
 # Get help
 greek-name-correction -help
@@ -305,6 +311,43 @@ GreekNameCorrection('Ελένη Γεωργίου', {
 //   }
 ```
 
+### Accent Addition
+```javascript
+// Add accents to unaccented Greek names (one accent per word)
+GreekNameCorrection('γιωργος παπαδοπουλος', {
+  addAccents: true
+});
+// → "Γιώργος Παπαδόπουλος"
+
+GreekNameCorrection('μαρια κωνσταντινου', {
+  addAccents: true
+});
+// → "Μαρία Κωνσταντίνου"
+
+// Words that already have accents are preserved
+GreekNameCorrection('Γιώργος Παπαδόπουλος', {
+  addAccents: true
+});
+// → "Γιώργος Παπαδόπουλος" (unchanged)
+
+// Works with preserveOriginal option
+GreekNameCorrection('νικος αλεξιου', {
+  addAccents: true,
+  preserveOriginal: true
+});
+// → {
+//     corrected: "Νίκος Αλεξίου",
+//     original: "νικος αλεξιου",
+//     isValid: true
+//   }
+
+// Each word gets exactly one accent
+GreekNameCorrection('δημήτρης νικολάου', {
+  addAccents: true
+});
+// → "Δημήτρης Νικολάου"
+```
+
 ### Name Corrections
 ```javascript
 GreekNameCorrection('γιοργος παπαδοπουλος', {
@@ -430,6 +473,7 @@ GreekNameCorrection(input, options)
 | `detectDiminutive` | `boolean` | `false` | Detect diminutive/nickname forms |
 | `handleTitles` | `boolean` | `true` | Extract and format titles |
 | `addGeneralTitle` | `boolean` | `false` | Automatically add general title (κ. for men, κα for women) if no title exists (always lowercase) |
+| `addAccents` | `boolean` | `false` | Add accents to firstname and lastname (one accent per word) |
 | `suggestCorrections` | `boolean` | `false` | Suggest corrections for misspellings |
 | `recognizeKatharevousa` | `boolean` | `false` | Convert archaic Greek forms |
 | `databaseSafe` | `boolean` | `false` | Remove problematic characters |
@@ -527,6 +571,7 @@ const result = GreekNameCorrection('dr giorgos tou papa', {
   preserveOriginal: true,
   handleTitles: true,
   addGeneralTitle: true,
+  addAccents: true,
   handleParticles: true,
   suggestCorrections: true,
   detectGender: true,
@@ -752,6 +797,7 @@ The test suite covers:
 - Case conversions (genitive, vocative, accusative)
 - Title handling
 - Automatic general title addition
+- Accent addition
 - Diminutive detection
 - Gender detection
 - Statistics generation
@@ -760,6 +806,7 @@ The test suite covers:
 ## Changelog
 
 ### Version 2.2.0 (Current)
+- ✨ **Accent Addition Feature** - Added `addAccents` option to automatically add accents to unaccented Greek names (one accent per word). Intelligently places accents based on Greek accentuation rules and word endings.
 - ✨ **TypeScript Support** - Added comprehensive TypeScript definitions (`index.d.ts`) with full type safety, IntelliSense support, and exported types
 
 ### Version 2.1.2
