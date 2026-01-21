@@ -245,6 +245,151 @@ function addGeneralTitleIfMissing(nameWithoutTitle) {
   return null;
 }
 
+// Check if a word already has an accent
+function hasAccent(word) {
+  return /[άέήίόύώΆΈΉΊΌΎΏ]/.test(word);
+}
+
+// Add accent to a single Greek word (ensures only one accent per word)
+function addAccentsToGreekWord(word) {
+  if (!word || word.trim() === "") {
+    return word;
+  }
+
+  // If word already has an accent, return as is
+  if (hasAccent(word)) {
+    return word;
+  }
+
+  // Check if word is in commonCorrections map (which has accented versions)
+  const lowerWord = word.toLowerCase();
+  if (commonCorrections[lowerWord]) {
+    // Preserve original capitalization
+    const accented = commonCorrections[lowerWord];
+    if (word[0] === word[0].toUpperCase()) {
+      return capitalizeGreekName(accented);
+    }
+    return accented;
+  }
+
+  // Map of unaccented to accented vowels
+  const accentMap = {
+    α: "ά",
+    ε: "έ",
+    η: "ή",
+    ι: "ί",
+    ο: "ό",
+    υ: "ύ",
+    ω: "ώ",
+    Α: "Ά",
+    Ε: "Έ",
+    Η: "Ή",
+    Ι: "Ί",
+    Ο: "Ό",
+    Υ: "Ύ",
+    Ω: "Ώ"
+  };
+
+  // Find vowels in the word
+  const vowels = /[αεηιουωΑΕΗΙΟΥΩ]/g;
+  const vowelMatches = [];
+  let match;
+  while ((match = vowels.exec(word)) !== null) {
+    vowelMatches.push({
+      index: match.index,
+      char: match[0]
+    });
+  }
+
+  if (vowelMatches.length === 0) {
+    return word; // No vowels, can't add accent
+  }
+
+  // Determine accent position based on word ending and length
+  let accentIndex = -1;
+  const wordLower = word.toLowerCase();
+  const lastChar = wordLower[wordLower.length - 1];
+  const secondLastChar = wordLower.length > 1 ? wordLower[wordLower.length - 2] : "";
+
+  // For words ending in -ος, -ης, -ας (masculine), accent typically on antepenultimate syllable
+  // For words ending in -ου, -α, -η (feminine), accent typically on penultimate syllable
+  // For short words (2-3 letters), accent on first vowel
+  // For longer words, accent on penultimate or antepenultimate vowel
+
+  if (wordLower.length <= 3) {
+    // Short words: accent on first vowel
+    accentIndex = 0;
+  } else if (wordLower.endsWith("ος") || wordLower.endsWith("ης") || wordLower.endsWith("ας") || 
+             wordLower.endsWith("ούς")) {
+    // Masculine endings: try antepenultimate syllable (3rd from end)
+    // If not enough vowels, use penultimate (2nd from end)
+    if (vowelMatches.length >= 3) {
+      accentIndex = vowelMatches.length - 3;
+    } else if (vowelMatches.length >= 2) {
+      accentIndex = vowelMatches.length - 2;
+    } else {
+      accentIndex = 0;
+    }
+  } else if (wordLower.endsWith("ου") || wordLower.endsWith("α") || wordLower.endsWith("η")) {
+    // Feminine endings: accent on penultimate syllable (2nd from end)
+    if (vowelMatches.length >= 2) {
+      accentIndex = vowelMatches.length - 2;
+    } else {
+      accentIndex = 0;
+    }
+  } else {
+    // Default: accent on penultimate vowel
+    if (vowelMatches.length >= 2) {
+      accentIndex = vowelMatches.length - 2;
+    } else {
+      accentIndex = 0;
+    }
+  }
+
+  // Apply accent
+  if (accentIndex >= 0 && accentIndex < vowelMatches.length) {
+    const vowelPos = vowelMatches[accentIndex];
+    const accentedChar = accentMap[vowelPos.char];
+    
+    if (accentedChar) {
+      return word.substring(0, vowelPos.index) + 
+             accentedChar + 
+             word.substring(vowelPos.index + 1);
+    }
+  }
+
+  return word;
+}
+
+// Add accents to firstname and lastname (each word gets only one accent)
+function addAccentsToName(name) {
+  if (!name || name.trim() === "") {
+    return name;
+  }
+
+  // Split name into parts
+  const parts = name.split(/\s+/);
+  const result = [];
+
+  for (let i = 0; i < parts.length; i++) {
+    const part = parts[i];
+    const lowerPart = part.toLowerCase();
+
+    // Skip particles and titles
+    if (isGreekParticle(lowerPart) || 
+        titles.some(t => t.toLowerCase() === lowerPart || t.toLowerCase() + "." === lowerPart)) {
+      result.push(part);
+      continue;
+    }
+
+    // Add accent to the word
+    const accentedPart = addAccentsToGreekWord(part);
+    result.push(accentedPart);
+  }
+
+  return result.join(" ");
+}
+
 module.exports = {
   capitalizeGreekName,
   isGreekParticle,
@@ -257,5 +402,7 @@ module.exports = {
   generateStatistics,
   detectGender,
   splitNameParts,
-  addGeneralTitleIfMissing
+  addGeneralTitleIfMissing,
+  addAccentsToGreekWord,
+  addAccentsToName
 };

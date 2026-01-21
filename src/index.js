@@ -24,7 +24,8 @@ const {
   generateStatistics,
   detectGender,
   splitNameParts,
-  addGeneralTitleIfMissing
+  addGeneralTitleIfMissing,
+  addAccentsToName
 } = require("./utils");
 
 /**
@@ -56,7 +57,8 @@ function GreekNameCorrection(input, options = {}) {
     databaseSafe: false,
     generateSortKey: false,
     statistics: false,
-    addGeneralTitle: false
+    addGeneralTitle: false,
+    addAccents: false // Add accents to firstname and lastname (one accent per word)
   };
 
   const config = { ...defaults, ...options };
@@ -125,6 +127,11 @@ function GreekNameCorrection(input, options = {}) {
         .join(" ");
     } else {
       processed = capitalizeGreekName(processed);
+    }
+
+    // Add accents to firstname and lastname (one accent per word)
+    if (config.addAccents) {
+      processed = addAccentsToName(processed);
     }
 
     // Convert to genitive case (before re-attaching title)
