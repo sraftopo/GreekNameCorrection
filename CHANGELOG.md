@@ -7,8 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.2.2] - 2025-01-XX
 
+### 🐛 Fixed
+- **Browser Compatibility**: Fixed critical browser compatibility issue with Node.js globals (`__dirname`)
+  - Added automatic environment detection for Node.js vs browser environments
+  - Safely handles `fs` and `path` module loading only when available
+  - Automatic fallback to hard-coded rules in browser environments
+  - Case conversion (vocative and accusative) now works seamlessly in browsers
+  - No breaking changes - all existing functionality preserved
+
 ### 🔧 Changed
 - **Package Configuration**: Updated repository URL format in package.json
+- **Environment Detection**: Library now automatically detects runtime environment (Node.js vs browser)
 
 ## [2.2.1] - 2025-01-XX
 
