@@ -815,7 +815,10 @@ The test suite covers:
 
 ## Changelog
 
-### Version 2.2.1 (Current)
+### Version 2.2.2 (Current)
+- 🔧 **Package Configuration** - Updated repository URL format in package.json
+
+### Version 2.2.1
 - 🔧 **Enhanced Accent Addition** - Improved `addAccents` feature with comprehensive name dictionary support. Now uses actual Greek name dictionaries from `generate_greek_names.js` for accurate accent placement on common names. Includes CLI support with `-addAccents` flag.
 - ✨ **Name Dictionary** - Built-in dictionary with 1,100+ Greek names (first names, surnames, compound surnames) for accurate accent placement
 - 🐛 **CLI Fix** - Added missing `-addAccents` flag to command-line interface
