@@ -5,6 +5,7 @@ A powerful, zero-dependency Node.js library for correcting, formatting, and vali
 ![NPM Version](https://img.shields.io/npm/v/greek-name-correction)
 ![License](https://img.shields.io/npm/l/greek-name-correction)
 ![Node Version](https://img.shields.io/node/v/greek-name-correction)
+![Codecov](https://codecov.io/gh/sraftopo/greek-name-correction/branch/main/graph/badge.svg)
 
 ## Features
 
