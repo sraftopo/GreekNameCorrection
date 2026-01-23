@@ -1,6 +1,6 @@
 # GreekNameCorrection
 
-A powerful, zero-dependency Node.js library for correcting, formatting, and validating Greek names with advanced features including transliteration, genitive conversion, and intelligent name processing.
+A powerful, zero-dependency library for correcting, formatting, and validating Greek names with advanced features including transliteration, genitive conversion, and intelligent name processing. Works seamlessly in both Node.js and browser environments.
 
 ![NPM Version](https://img.shields.io/npm/v/greek-name-correction)
 ![License](https://img.shields.io/npm/l/greek-name-correction)
@@ -720,7 +720,29 @@ console.log(`${pronoun} ${person.corrected}`);
 
 ## Browser Support
 
-While designed for Node.js, the library can be bundled for browser use with tools like Webpack or Browserify.
+The library is fully compatible with browser environments! It automatically detects the runtime environment and works seamlessly in both Node.js and browsers.
+
+### Features
+
+- ✅ **Automatic Environment Detection** - No configuration needed
+- ✅ **Zero Browser Errors** - No `__dirname` or Node.js-specific globals required
+- ✅ **Full Feature Support** - All features work in browsers, including case conversion
+- ✅ **Smart Fallback** - Uses hard-coded rules in browsers, markdown files in Node.js when available
+
+### Usage in Browser
+
+```javascript
+// Works directly in browser (with bundler like Webpack, Browserify, or Vite)
+import GreekNameCorrection from 'greek-name-correction';
+
+// All features work, including case conversion
+const result = GreekNameCorrection('Γιώργος Παπαδόπουλος', {
+  convertToCase: 'vocative',
+  detectGender: true
+});
+```
+
+The library automatically uses hard-coded rules for case conversion in browser environments, ensuring full functionality without file system access.
 
 ## TypeScript
 
@@ -816,7 +838,10 @@ The test suite covers:
 
 ## Changelog
 
-### Version 2.2.1 (Current)
+### Version 2.2.2 (Current)
+- 🔧 **Package Configuration** - Updated repository URL format in package.json
+
+### Version 2.2.1
 - 🔧 **Enhanced Accent Addition** - Improved `addAccents` feature with comprehensive name dictionary support. Now uses actual Greek name dictionaries from `generate_greek_names.js` for accurate accent placement on common names. Includes CLI support with `-addAccents` flag.
 - ✨ **Name Dictionary** - Built-in dictionary with 1,100+ Greek names (first names, surnames, compound surnames) for accurate accent placement
 - 🐛 **CLI Fix** - Added missing `-addAccents` flag to command-line interface

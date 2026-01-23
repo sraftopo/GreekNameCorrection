@@ -1,8 +1,31 @@
 // rulesParser.js
 "use strict";
 
-const fs = require("fs");
-const path = require("path");
+// Browser environment detection
+// Check if Node.js globals are available
+function isNodeEnvironment() {
+  return (
+    typeof __dirname !== "undefined" &&
+    typeof require !== "undefined" &&
+    typeof module !== "undefined"
+  );
+}
+
+// Safely require Node.js modules only in Node.js environment
+let fs, path;
+if (isNodeEnvironment()) {
+  try {
+    fs = require("fs");
+    path = require("path");
+  } catch (e) {
+    // If require fails, we're likely in a browser environment
+    fs = null;
+    path = null;
+  }
+} else {
+  fs = null;
+  path = null;
+}
 
 /**
  * Parse markdown file and extract Greek name case conversion rules
@@ -10,6 +33,11 @@ const path = require("path");
  * @returns {Object} Parsed rules structure
  */
 function parseMarkdownRules(filePath) {
+  // In browser environments, fs is not available
+  if (!fs || !path) {
+    return null;
+  }
+  
   try {
     const content = fs.readFileSync(filePath, "utf8");
     return parseMarkdownContent(content);
@@ -260,6 +288,12 @@ function extractEnding(name) {
  * Parse vocative rules from names_klitiki.md
  */
 function parseVocativeRules() {
+  // In browser environments, skip file reading and return null
+  // This will trigger fallback to hard-coded rules in cases.js
+  if (!isNodeEnvironment() || !path || typeof __dirname === "undefined") {
+    return null;
+  }
+  
   const filePath = path.join(__dirname, "..", "names_klitiki.md");
   const rules = parseMarkdownRules(filePath);
   
@@ -448,6 +482,12 @@ function extractNameListsFromExamples(structuredRules, examples) {
  * Parse accusative rules from names_aitiatiki.md
  */
 function parseAccusativeRules() {
+  // In browser environments, skip file reading and return null
+  // This will trigger fallback to hard-coded rules in cases.js
+  if (!isNodeEnvironment() || !path || typeof __dirname === "undefined") {
+    return null;
+  }
+  
   const filePath = path.join(__dirname, "..", "names_aitiatiki.md");
   const rules = parseMarkdownRules(filePath);
   

@@ -1,6 +1,6 @@
 {
     "name": "greek-name-correction",
-    "version": "2.2.1",
+    "version": "2.2.2",
     "description": "A zero-dependency Node.js library for correcting and formatting Greek names with transliteration, genitive conversion, and advanced features",
     "main": "src/index.js",
     "types": "index.d.ts",
