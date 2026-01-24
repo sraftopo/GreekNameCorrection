@@ -54,9 +54,15 @@
         "collectCoverageFrom": [
             "src/**/*.js"
         ],
+        "coverageDirectory": "coverage",
+        "coverageReporters": [
+            "text",
+            "lcov",
+            "json"
+        ],
         "coveragePathIgnorePatterns": [
-            "/node_modules/",
-            "/test/"
+            "node_modules",
+            "test"
         ],
         "coverageThreshold": {
             "global": {
