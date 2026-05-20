@@ -163,6 +163,40 @@ function isDiminutivePattern(lowerPart) {
   );
 }
 
+// Resolve -ος ending as "ο", "ε", or null (unchanged) using vocative-style rules
+function resolveOsVocativeStyleEnding(part, index, totalParts, parsedRules) {
+  const lowerPart = part.toLowerCase();
+
+  if (isDiminutivePattern(lowerPart)) {
+    return "ο";
+  }
+
+  const firstNamesInO =
+    parsedRules?.osEndings?.firstNames?.paroxytone?.inO ||
+    vocativeInO_FirstNames;
+  const firstNamesInE =
+    parsedRules?.osEndings?.firstNames?.paroxytone?.inE ||
+    vocativeInE_FirstNames;
+  const firstNamesUnchanged =
+    parsedRules?.osEndings?.firstNames?.oxytone?.unchanged || oxytoneNames;
+
+  if (firstNamesInO.includes(lowerPart)) {
+    return "ο";
+  }
+  if (firstNamesInE.includes(lowerPart)) {
+    return "ε";
+  }
+  if (isLikelySurname(part, index, totalParts)) {
+    return isOxytoneSurname(part) ? "ε" : "ο";
+  }
+  if (firstNamesUnchanged.includes(lowerPart) || isOxytone(part)) {
+    return null;
+  }
+
+  const syllableCount = (part.match(/[αεηιουωάέήίόύώ]/gi) || []).length;
+  return syllableCount <= 2 ? "ο" : "ε";
+}
+
 // Convert to vocative case
 // Converts all name parts (first name and last name), but skips particles
 function convertToVocative(name, config) {
@@ -196,55 +230,14 @@ function convertToVocative(name, config) {
 
     // Handle masculine names ending in -ος
     if (lowerPart.endsWith("ος")) {
-      // Check if it's a diminutive pattern first
-      if (isDiminutivePattern(lowerPart)) {
-        // Diminutives: -ος → -ο
-        vocative = part.slice(0, -2) + "ο";
-      }
-      // Use parsed rules if available, otherwise use hard-coded lists
-      else {
-        // Get name lists from parsed rules or fallback to hard-coded
-        const firstNamesInO = parsedRules?.osEndings?.firstNames?.paroxytone?.inO || vocativeInO_FirstNames;
-        const firstNamesInE = parsedRules?.osEndings?.firstNames?.paroxytone?.inE || vocativeInE_FirstNames;
-        const firstNamesUnchanged = parsedRules?.osEndings?.firstNames?.oxytone?.unchanged || oxytoneNames;
-        
-        // Check explicit list of first names that form vocative in -ο
-        if (firstNamesInO.includes(lowerPart)) {
-          vocative = part.slice(0, -2) + "ο";
-        }
-        // Check explicit list of first names that form vocative in -ε
-        else if (firstNamesInE.includes(lowerPart)) {
-          vocative = part.slice(0, -2) + "ε";
-        }
-        // Check if it's likely a surname (by position or explicit list)
-        else if (isLikelySurname(part, index, totalParts)) {
-          // For surnames, check if oxytone
-          if (isOxytoneSurname(part)) {
-            // Oxytone surname: -ος → -ε
-            vocative = part.slice(0, -2) + "ε";
-          } else {
-            // Paroxytone surname: -ος → -ο
-            vocative = part.slice(0, -2) + "ο";
-          }
-        }
-        // It's a first name (not in explicit lists) - default behavior
-        else {
-          if (firstNamesUnchanged.includes(lowerPart) || isOxytone(part)) {
-            // Oxytone first name: remains unchanged
-            vocative = part;
-          } else {
-            // Paroxytone first name: default to -ο for common short names, -ε for longer names
-            // Default to -ο for disyllabic names, -ε for longer
-            const syllableCount = (part.match(/[αεηιουωάέήίόύώ]/gi) || []).length;
-            if (syllableCount <= 2) {
-              // Disyllabic: -ος → -ο
-              vocative = part.slice(0, -2) + "ο";
-            } else {
-              // Longer names: -ος → -ε
-              vocative = part.slice(0, -2) + "ε";
-            }
-          }
-        }
+      const ending = resolveOsVocativeStyleEnding(
+        part,
+        index,
+        totalParts,
+        parsedRules
+      );
+      if (ending) {
+        vocative = part.slice(0, -2) + ending;
       }
     }
     // Handle masculine names ending in -ης
@@ -290,7 +283,7 @@ function convertToVocative(name, config) {
 function convertToAccusative(name, config) {
   // Try to load parsed rules from markdown, fallback to hard-coded rules
   const parsedRules = getAccusativeRules();
-  
+
   const parts = name.split(/\s+/);
   const processedParts = parts.map((part) => {
     const lowerPart = part.toLowerCase();

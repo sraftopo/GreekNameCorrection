@@ -381,6 +381,15 @@ describe('Accusative Case Conversion', () => {
     })).toBe('Γιώργο Παπαδόπουλο');
   });
 
+  test('should use -ο for accusative and -ε for vocative on names like Πρόδρομος', () => {
+    expect(GreekNameCorrection('Πρόδρομος', {
+      convertToCase: 'accusative'
+    })).toBe('Πρόδρομο');
+    expect(GreekNameCorrection('Πρόδρομος', {
+      convertToCase: 'vocative'
+    })).toBe('Πρόδρομε');
+  });
+
   test('should convert masculine name ending in -ης to accusative', () => {
     expect(GreekNameCorrection('Δημήτρης Νικολάου', {
       convertToCase: 'accusative'
