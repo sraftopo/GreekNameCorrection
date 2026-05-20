@@ -5,6 +5,19 @@ All notable changes to the GreekNameCorrection project will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.3] - 2026-05-20
+
+### 📖 Documentation
+- **README**: Expanded vocative vs accusative sections with rules tables, CLI examples, and Πρόδρομος / Στέφανος comparisons
+- **README_NOTES_2.2.3.md**: Full release notes for this version
+
+### 🔧 Changed
+- **Vocative conversion**: Refactored masculine **-ος** handling via `resolveOsVocativeStyleEnding()` in `src/cases.js` (same behavior, clearer structure)
+- **Accusative conversion**: Confirmed masculine **-ος** always → **-ο** (e.g. Πρόδρομος → Πρόδρομο, not Πρόδρομε)
+
+### ✅ Tests
+- Added test: Πρόδρομος accusative **Πρόδρομο** and vocative **Πρόδρομε**
+
 ## [2.2.2] - 2025-01-XX
 
 ### 🐛 Fixed
@@ -222,6 +235,7 @@ Major feature release introducing transliteration, genitive conversion, and adva
 
 ---
 
+[2.2.3]: https://github.com/sraftopo/GreekNameCorrection/compare/v2.2.2...v2.2.3
 [2.2.2]: https://github.com/sraftopo/GreekNameCorrection/compare/v2.2.1...v2.2.2
 [2.2.1]: https://github.com/sraftopo/GreekNameCorrection/compare/v2.2.0...v2.2.1
 [2.2.0]: https://github.com/sraftopo/GreekNameCorrection/compare/v2.1.2...v2.2.0

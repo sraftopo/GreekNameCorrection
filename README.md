@@ -15,7 +15,7 @@ A powerful, zero-dependency library for correcting, formatting, and validating G
 📝 **Smart Formatting** - Proper capitalization and syntax  
 👔 **Title Support** - Handles Greek honorifics (Δρ., Καθ., etc.)  
 🎩 **Auto Title Addition** - Automatically adds general titles (Κ. for men, Κα for women)  
-🔀 **Case Conversion** - Genitive, vocative, and accusative forms  
+🔀 **Case Conversion** - Genitive, vocative (κλητική), and accusative (αιτιατική); distinct rules for names like Πρόδρομος → Πρόδρομο / Πρόδρομε  
 🎯 **Gender Detection** - Identifies gender from name endings  
 📊 **Statistics** - Comprehensive name analysis  
 🔍 **Diminutive Detection** - Recognizes nickname patterns  
@@ -121,10 +121,14 @@ greek-name-correction -name "Μαρία Κωνσταντίνου" -detectGender 
 ### Examples
 
 ```bash
-# Vocative case conversion
-greek-name-correction -name "Γιώργος Παπαδόπουλος" -convertToCase vocative
+# Vocative (addressing): Πρόδρομος → Πρόδρομε
+greek-name-correction -name "Πρόδρομος" -convertToCase vocative
 
-# Accusative case conversion
+# Accusative (direct object): Πρόδρομος → Πρόδρομο
+greek-name-correction -name "Πρόδρομος" -convertToCase accusative
+
+# Full name examples
+greek-name-correction -name "Γιώργος Παπαδόπουλος" -convertToCase vocative
 greek-name-correction -name "Δημήτρης Νικολάου" -convertToCase accusative
 
 # Transliteration
@@ -217,13 +221,23 @@ GreekNameCorrection('Γιώργος Παπαδόπουλος', {
 //   }
 ```
 
-### Vocative Case Conversion
+### Vocative Case Conversion (Κλητική)
+
+Use `convertToCase: 'vocative'` when **addressing** someone directly (e.g. «Γεια σου, …», «Αγαπητέ …»).
+
 ```javascript
 // Convert to vocative case (for addressing someone)
 GreekNameCorrection('Γιώργος Παπαδόπουλος', {
   convertToCase: 'vocative'
 });
 // → "Γιώργο Παπαδόπουλο"
+
+// Longer first names often form vocative in -ε
+GreekNameCorrection('Στέφανος', { convertToCase: 'vocative' });
+// → "Στέφανε"
+
+GreekNameCorrection('Πρόδρομος', { convertToCase: 'vocative' });
+// → "Πρόδρομε"
 
 // With preserveOriginal to get both forms
 GreekNameCorrection('Γιάννης Αλεξίου', {
@@ -242,13 +256,36 @@ GreekNameCorrection('Μαρία Κωνσταντίνου', {
 // → "Μαρία Κωνσταντίνου"
 ```
 
-### Accusative Case Conversion
+**Masculine names ending in -ος (vocative)** depend on the name and position (first name vs surname):
+
+| Pattern | Examples (nominative → vocative) |
+|--------|-----------------------------------|
+| Common short first names → **-ο** | Γιώργος → Γιώργο, Νίκος → Νίκο, Πέτρος → Πέτρο |
+| Listed longer first names → **-ε** | Στέφανος → Στέφανε, Κωνσταντίνος → Κωνσταντίνε, Αλέξανδρος → Αλέξανδρε |
+| Other longer first names (3+ syllables) → **-ε** | Πρόδρομος → Πρόδρομε |
+| Paroxytone surnames → **-ο** | Παπαδόπουλος → Παπαδόπουλο |
+| Oxytone surnames → **-ε** | Ξινός → Ξινέ |
+| Oxytone first names | Often unchanged (e.g. Νικολός) |
+
+Rules are loaded from `names_klitiki.md` in Node.js when available, with the same logic as hard-coded fallbacks in `src/cases.js` and `src/constants.js`.
+
+### Accusative Case Conversion (Αιτιατική)
+
+Use `convertToCase: 'accusative'` for **direct objects** (e.g. «Είδα τον …», «Καλώ την …»).
+
 ```javascript
 // Convert to accusative case (for direct objects)
 GreekNameCorrection('Γιώργος Παπαδόπουλος', {
   convertToCase: 'accusative'
 });
 // → "Γιώργο Παπαδόπουλο"
+
+// All masculine -ος names → -ο in accusative (unlike vocative)
+GreekNameCorrection('Πρόδρομος', { convertToCase: 'accusative' });
+// → "Πρόδρομο"
+
+GreekNameCorrection('Στέφανος', { convertToCase: 'accusative' });
+// → "Στέφανο"
 
 // With preserveOriginal to get both forms
 GreekNameCorrection('Κώστας Παπαδάκης', {
@@ -266,6 +303,39 @@ GreekNameCorrection('Μαρία Κωνσταντίνου', {
 });
 // → "Μαρία Κωνσταντίνου"
 ```
+
+**Masculine accusative endings** (consistent; no stress-based split for -ος):
+
+| Ending | Rule | Examples |
+|--------|------|----------|
+| **-ος** | Always **-ο** | Πρόδρομος → Πρόδρομο, Στέφανος → Στέφανο, Γιώργος → Γιώργο |
+| **-ης** | **-η** | Δημήτρης → Δημήτρη, Γιάννης → Γιάννη |
+| **-ας** | **-α** (or **-η** if name follows -ης pattern) | Κώστας → Κώστα, Θανάσης → Θανάση |
+| **-ούς** | **-ού** | (rare in names) |
+
+Rules are loaded from `names_aitiatiki.md` in Node.js when available.
+
+### Vocative vs Accusative (do not confuse)
+
+For the same nominative name, **vocative** and **accusative** can differ when the vocative uses **-ε**:
+
+```javascript
+const name = 'Πρόδρομος';
+
+GreekNameCorrection(name, { convertToCase: 'accusative' }); // → "Πρόδρομο"  (τον Πρόδρομο)
+GreekNameCorrection(name, { convertToCase: 'vocative' });   // → "Πρόδρομε"  (direct address)
+
+GreekNameCorrection('Στέφανος', { convertToCase: 'accusative' }); // → "Στέφανο"
+GreekNameCorrection('Στέφανος', { convertToCase: 'vocative' });   // → "Στέφανε"
+```
+
+| Name (ονομαστική) | Accusative (αιτιατική) | Vocative (κλητική) | Typical use |
+|-------------------|------------------------|-------------------|-------------|
+| Πρόδρομος | Πρόδρομο | Πρόδρομε | τον Πρόδρομο / «Πρόδρομε!» |
+| Στέφανος | Στέφανο | Στέφανε | τον Στέφανο / «Στέφανε!» |
+| Γιώργος | Γιώργο | Γιώργο | τον Γιώργο / «Γιώργο!» |
+
+Use **vocative** for calling or greeting someone; use **accusative** for object forms after verbs or with **τον/την**.
 
 ### Title Handling
 ```javascript
@@ -706,7 +776,8 @@ flowchart TD
     - Only adds if no title was extracted in step 1
 
 13. **Case Conversion** (`convertToCase: 'vocative' | 'accusative'`)
-    - Converts to vocative or accusative case
+    - **Vocative (κλητική):** name-dependent **-ο** / **-ε** for masculine **-ος** (see [Vocative Case Conversion](#vocative-case-conversion-κλητική))
+    - **Accusative (αιτιατική):** masculine **-ος** always → **-ο**; **-ης** → **-η**; **-ας** → **-α** (see [Accusative Case Conversion](#accusative-case-conversion-αιτιατική))
     - **Stored separately** in result object
     - If `preserveOriginal: false`, returns case form directly
 
@@ -974,18 +1045,20 @@ const recipient = GreekNameCorrection(name, {
 console.log(`Προς: ${recipient.genitive}`);
 
 // Use vocative case for addressing someone
-const addressee = GreekNameCorrection('Γιώργος Παπαδόπουλος', {
+const addressee = GreekNameCorrection('Πρόδρομος', {
   convertToCase: 'vocative'
 });
+console.log(`Γεια σου, ${addressee}!`); // "Γεια σου, Πρόδρομε!"
 
-console.log(`Αγαπητέ ${addressee},`); // "Αγαπητέ Γιώργο Παπαδόπουλο,"
-
-// Use accusative case for direct objects
-const object = GreekNameCorrection('Δημήτρης Νικολάου', {
+// Use accusative case for direct objects (with article τον/την)
+const object = GreekNameCorrection('Πρόδρομος', {
   convertToCase: 'accusative'
 });
+console.log(`Είδα τον ${object}.`); // "Είδα τον Πρόδρομο."
 
-console.log(`Είδα τον ${object}`); // "Είδα τον Δημήτρη Νικολάου"
+// Same name, different case — do not use vocative where accusative is required
+GreekNameCorrection('Στέφανος', { convertToCase: 'accusative' }); // → "Στέφανο" (τον Στέφανο)
+GreekNameCorrection('Στέφανος', { convertToCase: 'vocative' });   // → "Στέφανε" (Στέφανε!)
 ```
 
 ### 5. Gender-Based Processing
@@ -1115,7 +1188,7 @@ The test suite covers:
 - Array processing
 - Object processing
 - All transliteration modes
-- Case conversions (genitive, vocative, accusative)
+- Case conversions (genitive, vocative, accusative), including vocative vs accusative for names like Πρόδρομος
 - Title handling
 - Automatic general title addition
 - Accent addition
@@ -1126,8 +1199,16 @@ The test suite covers:
 
 ## Changelog
 
-### Version 2.2.2 (Current)
-- 🔧 **Package Configuration** - Updated repository URL format in package.json
+### Version 2.2.3 (Current)
+- 📖 **Case conversion documentation** - README documents vocative (κλητική) vs accusative (αιτιατική), including masculine **-ος** names where forms differ (e.g. Πρόδρομος → **Πρόδρομο** / **Πρόδρομε**; Στέφανος → **Στέφανο** / **Στέφανε**)
+- 🔧 **Vocative logic refactor** - Shared `resolveOsVocativeStyleEnding()` in `src/cases.js` for clearer **-ο** / **-ε** handling
+- ✅ **Accusative consistency** - Masculine **-ος** names always form accusative in **-ο**; vocative keeps separate name-dependent rules
+- ✅ **Tests** - Added coverage for Πρόδρομος accusative vs vocative forms
+- 📝 See [README_NOTES_2.2.3.md](./README_NOTES_2.2.3.md) for full release notes
+
+### Version 2.2.2
+- 🌐 **Browser compatibility** - Environment detection and fallback to hard-coded rules when `__dirname` / file system is unavailable
+- 🔧 **Package configuration** - Updated repository URL format in package.json
 
 ### Version 2.2.1
 - 🔧 **Enhanced Accent Addition** - Improved `addAccents` feature with comprehensive name dictionary support. Now uses actual Greek name dictionaries from `generate_greek_names.js` for accurate accent placement on common names. Includes CLI support with `-addAccents` flag.
