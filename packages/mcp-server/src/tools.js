@@ -16,7 +16,8 @@ const CORRECT_OPTION_KEYS = [
   "removeExtraSpaces",
   "splitNames",
   "normalizeTonotics",
-  "handleDiacritics"
+  "handleDiacritics",
+  "explainConfidence"
 ];
 
 const correctOptionsSchema = {
@@ -82,9 +83,16 @@ const correctOptionsSchema = {
     handleDiacritics: {
       type: "boolean",
       description: "Normalize the string to NFC. Default true."
+    },
+    explainConfidence: {
+      type: "boolean",
+      description:
+        "When true, include confidence.score (0..1) and confidence.signals. Default false omits confidence. preserveOriginal is already forced on."
     }
   }
 };
+
+const explainConfidenceProperty = correctOptionsSchema.properties.explainConfidence;
 
 const tools = [
   {
@@ -122,7 +130,8 @@ const tools = [
           enum: ["genitive", "vocative", "accusative"],
           description:
             "genitive uses convertToGenitive. vocative and accusative use convertToCase."
-        }
+        },
+        explainConfidence: explainConfidenceProperty
       }
     }
   },
@@ -143,7 +152,8 @@ const tools = [
           type: "string",
           enum: ["greeklish-to-greek", "greek-to-latin", "greek-to-greeklish"],
           description: "Library transliterate mode."
-        }
+        },
+        explainConfidence: explainConfidenceProperty
       }
     }
   },
@@ -159,7 +169,8 @@ const tools = [
         name: {
           type: "string",
           description: "The name to analyze."
-        }
+        },
+        explainConfidence: explainConfidenceProperty
       }
     }
   },
@@ -271,6 +282,13 @@ function libraryOptions(options) {
   return config;
 }
 
+function applyExplainConfidence(config, args) {
+  if (Object.prototype.hasOwnProperty.call(args, "explainConfidence")) {
+    config.explainConfidence = args.explainConfidence;
+  }
+  return config;
+}
+
 function ok(value) {
   return {
     content: [{ type: "text", text: JSON.stringify(value, null, 2) }]
@@ -308,28 +326,40 @@ function callTool(name, args) {
     } else {
       config.convertToCase = args.case;
     }
-    return ok(GreekNameCorrection(args.name, config));
+    return ok(GreekNameCorrection(args.name, applyExplainConfidence(config, args)));
   }
 
   if (name === "transliterate_greek_name") {
     return ok(
-      GreekNameCorrection(args.name, {
-        preserveOriginal: true,
-        transliterate: args.mode
-      })
+      GreekNameCorrection(
+        args.name,
+        applyExplainConfidence(
+          {
+            preserveOriginal: true,
+            transliterate: args.mode
+          },
+          args
+        )
+      )
     );
   }
 
   if (name === "analyze_greek_name") {
     return ok(
-      GreekNameCorrection(args.name, {
-        preserveOriginal: true,
-        detectGender: true,
-        detectDiminutive: true,
-        generateSortKey: true,
-        handleTitles: true,
-        splitNames: true
-      })
+      GreekNameCorrection(
+        args.name,
+        applyExplainConfidence(
+          {
+            preserveOriginal: true,
+            detectGender: true,
+            detectDiminutive: true,
+            generateSortKey: true,
+            handleTitles: true,
+            splitNames: true
+          },
+          args
+        )
+      )
     );
   }
 

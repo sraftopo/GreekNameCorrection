@@ -28,7 +28,7 @@ Development depends on the core library with `"greek-name-correction": "file:../
 | `analyze_greek_name` | `name` | `gender`, `diminutive`, `title` when present, `parts`, `sortKey`. |
 | `batch_correct_greek_names` | `names` (max 100 strings), optional `options` | Array of correction objects, in order. |
 
-`options` accepts only the boolean flags documented in the tool schema (`addAccents`, `handleParticles`, `suggestCorrections`, and the other formatting flags). `preserveOriginal` is always on.
+`options` accepts the boolean flags in the tool schema, including `explainConfidence`. `preserveOriginal` is always on. `explainConfidence` defaults to false, which omits `confidence`. Set it to true on correction, batch, case, transliteration, or analysis to include `confidence.score` and `confidence.signals`.
 
 Behavior an LLM should not guess past:
 
