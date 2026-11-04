@@ -1,6 +1,6 @@
 {
     "name": "greek-name-correction",
-    "version": "2.2.3",
+    "version": "2.3.0",
     "description": "A zero-dependency Node.js library for correcting and formatting Greek names with transliteration, genitive conversion, and advanced features",
     "main": "src/index.js",
     "types": "index.d.ts",
@@ -23,7 +23,7 @@
         "katharevousa"
     ],
     "author": "Stavros",
-    "license": "MIT",
+    "license": "CC-BY-ND-4.0",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/sraftopo/greek-name-correction.git"
@@ -63,6 +63,11 @@
         "coveragePathIgnorePatterns": [
             "node_modules",
             "test"
+        ],
+        "testPathIgnorePatterns": [
+            "/node_modules/",
+            "<rootDir>/packages/",
+            "<rootDir>/ml/"
         ],
         "coverageThreshold": {
             "global": {

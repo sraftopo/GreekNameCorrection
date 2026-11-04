@@ -42,3 +42,7 @@ Thumbs.db
 
 # CI/CD
 .github/
+
+# Companion packages and training code are not part of the core publish
+ml/
+packages/

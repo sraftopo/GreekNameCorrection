@@ -1,0 +1,34 @@
+{
+  "name": "greek-name-correction-mcp",
+  "version": "1.0.0",
+  "description": "MCP server that exposes the greek-name-correction rules engine as tools for LLMs",
+  "main": "src/index.js",
+  "bin": {
+    "greek-name-correction-mcp": "src/index.js"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "jest"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "CC-BY-ND-4.0",
+  "files": [
+    "src/",
+    "README.md"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/server": "^2.4.0",
+    "greek-name-correction": "file:../.."
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "<rootDir>/test/**/*.test.js"
+    ]
+  }
+}
