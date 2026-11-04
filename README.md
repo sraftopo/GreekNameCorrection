@@ -3,7 +3,7 @@
 A powerful, zero-dependency library for correcting, formatting, and validating Greek names with advanced features including transliteration, genitive conversion, and intelligent name processing. Works seamlessly in both Node.js and browser environments.
 
 ![NPM Version](https://img.shields.io/npm/v/greek-name-correction)
-![License](https://img.shields.io/npm/l/greek-name-correction)
+![License](https://img.shields.io/badge/license-CC%20BY--ND%204.0-lightgrey)
 ![Node Version](https://img.shields.io/node/v/greek-name-correction)
 ![Codecov](https://codecov.io/gh/sraftopo/greek-name-correction/branch/main/graph/badge.svg)
 
@@ -1199,7 +1199,10 @@ The test suite covers:
 
 ## Changelog
 
-### Version 2.2.3 (Current)
+### Version 2.3.0 (Current)
+- 📜 **License** - New releases use [CC BY-ND 4.0](https://creativecommons.org/licenses/by-nd/4.0/). Versions through 2.2.3 stay MIT.
+
+### Version 2.2.3
 - 📖 **Case conversion documentation** - README documents vocative (κλητική) vs accusative (αιτιατική), including masculine **-ος** names where forms differ (e.g. Πρόδρομος → **Πρόδρομο** / **Πρόδρομε**; Στέφανος → **Στέφανο** / **Στέφανε**)
 - 🔧 **Vocative logic refactor** - Shared `resolveOsVocativeStyleEnding()` in `src/cases.js` for clearer **-ο** / **-ε** handling
 - ✅ **Accusative consistency** - Masculine **-ος** names always form accusative in **-ο**; vocative keeps separate name-dependent rules
@@ -1253,7 +1256,14 @@ The test suite covers:
 
 ## License
 
-MIT © Stavros
+Copyright (c) Stavros
+
+Starting with the next release, this project is licensed under
+[CC BY-ND 4.0](https://creativecommons.org/licenses/by-nd/4.0/). You may copy
+and redistribute it, including commercially, if you credit Stavros. You may
+not distribute a modified version.
+
+Versions published through 2.2.3 remain under the MIT license.
 
 ## Support
 
