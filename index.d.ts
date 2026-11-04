@@ -23,6 +23,28 @@ export type CaseConversion = 'vocative' | 'accusative' | null;
 export type Gender = 'male' | 'female' | 'unknown';
 
 /**
+ * Low-confidence signal recorded when explainConfidence is requested.
+ */
+export type ConfidenceSignal =
+  | 'accent_heuristic_fallback'
+  | 'name_not_in_dictionary'
+  | 'gender_unknown'
+  | 'vocative_default_branch'
+  | 'greeklish_ambiguous'
+  | 'mixed_script'
+  | 'all_caps_input';
+
+/**
+ * Heuristic confidence for one corrected name.
+ */
+export interface NameConfidence {
+  /** 1 minus the weights of the signals that fired, clamped to 0..1. */
+  score: number;
+  /** Signals in a fixed order. Each signal appears at most once. */
+  signals: ConfidenceSignal[];
+}
+
+/**
  * Name parts structure
  */
 export interface NameParts {
@@ -170,6 +192,12 @@ export interface GreekNameCorrectionOptions {
    * Add accents to firstname and lastname (one accent per word) (default: false)
    */
   addAccents?: boolean;
+
+  /**
+   * When true together with preserveOriginal, add a confidence score and signals.
+   * Default false. The result is unchanged when this is false, and when preserveOriginal is false.
+   */
+  explainConfidence?: boolean;
 }
 
 /**
@@ -245,6 +273,11 @@ export interface GreekNameCorrectionResult {
    * The suggested correction (if suggestCorrections is true and a correction was found)
    */
   suggestedCorrection?: string;
+
+  /**
+   * Confidence score and signals (only when explainConfidence and preserveOriginal are both true)
+   */
+  confidence?: NameConfidence;
 }
 
 /**

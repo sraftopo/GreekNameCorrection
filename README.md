@@ -111,6 +111,7 @@ greek-name-correction -name "Μαρία Κωνσταντίνου" -detectGender 
 | `-statistics` | Generate name statistics |
 | `-addGeneralTitle` | Add general title (κ./κα) based on gender |
 | `-addAccents` | Add accents to firstname and lastname (one accent per word) |
+| `-explainConfidence` | With `-preserveOriginal`, add `confidence.score` and `confidence.signals` |
 | `-handleTitles` | Handle titles (default: true) |
 | `-handleParticles` | Handle Greek particles (default: true) |
 | `-strictMode` | Enable strict mode |
@@ -555,6 +556,7 @@ GreekNameCorrection(input, options)
 | `handleTitles` | `boolean` | `true` | Extract and format titles |
 | `addGeneralTitle` | `boolean` | `false` | Automatically add general title (κ. for men, κα for women) if no title exists (always lowercase) |
 | `addAccents` | `boolean` | `false` | Add accents to firstname and lastname (one accent per word). Uses comprehensive name dictionary (1,100+ names) for accurate placement, with intelligent fallback rules |
+| `explainConfidence` | `boolean` | `false` | With `preserveOriginal`, add `confidence`. Has no effect on the returned string when `preserveOriginal` is false |
 | `suggestCorrections` | `boolean` | `false` | Suggest corrections for misspellings |
 | `recognizeKatharevousa` | `boolean` | `false` | Convert archaic Greek forms |
 | `databaseSafe` | `boolean` | `false` | Remove problematic characters |
@@ -585,9 +587,40 @@ When `preserveOriginal: true`, returns an object with:
   sortKey?: string,         // Sort key (if generateSortKey)
   statistics?: Object,      // Name statistics (if statistics)
   wasCorrected?: boolean,   // If corrections were applied
-  suggestedCorrection?: string  // Suggested correction
+  suggestedCorrection?: string, // Suggested correction
+  confidence?: {            // Only when explainConfidence is true
+    score: number,          // 0..1
+    signals: string[]
+  }
 }
 ```
+
+### Confidence
+
+Set `explainConfidence: true` together with `preserveOriginal: true`. The result then includes:
+
+```javascript
+confidence: {
+  score: 0.8, // 1 minus the weights below, clamped to 0..1, two decimal places
+  signals: ["name_not_in_dictionary"]
+}
+```
+
+With `explainConfidence` left off, the result is the same as before. With `explainConfidence` on and `preserveOriginal` off, the return value stays a string. `gender` is still added only when `detectGender` is true. An empty name still returns `null` in strict mode and the original value otherwise, with no confidence object.
+
+Each signal is recorded at most once, in this order:
+
+| Signal | Weight | When it is recorded |
+|--------|--------|---------------------|
+| `accent_heuristic_fallback` | 0.25 | `addAccents` placed an accent with the vowel heuristic |
+| `name_not_in_dictionary` | 0.20 | A content word is missing from the accent dictionary and from `commonCorrections` |
+| `gender_unknown` | 0.15 | `detectGender` on the final string returns `unknown` |
+| `vocative_default_branch` | 0.25 | Vocative used the vowel-count rule for an unlisted non-surname ending in -ος |
+| `greeklish_ambiguous` | 0.15 | Greeklish-to-Greek applied bare `i`, `h`, `y`, `o`, `w`, or `e`, or left a Latin letter |
+| `mixed_script` | 0.20 | The original text contains both Latin and Greek letters |
+| `all_caps_input` | 0.10 | The original text contains a letter and is already uppercase |
+
+No signals means `score` is `1`. Particles and titles are not treated as dictionary misses. A listed vocative, a surname chosen by position, Παύλος, and accusative -ος → -ο do not record `vocative_default_branch`.
 
 ## Supported Greek Titles
 
@@ -1201,6 +1234,7 @@ The test suite covers:
 
 ### Version 2.3.0 (Current)
 - 📜 **License** - New releases use [CC BY-ND 4.0](https://creativecommons.org/licenses/by-nd/4.0/). Versions through 2.2.3 stay MIT.
+- 🔎 **Confidence** - `explainConfidence` with `preserveOriginal` adds `confidence.score` and `confidence.signals`.
 
 ### Version 2.2.3
 - 📖 **Case conversion documentation** - README documents vocative (κλητική) vs accusative (αιτιατική), including masculine **-ος** names where forms differ (e.g. Πρόδρομος → **Πρόδρομο** / **Πρόδρομε**; Στέφανος → **Στέφανο** / **Στέφανε**)
