@@ -90,10 +90,26 @@ describe("correct_greek_name", () => {
 
     const badOption = callTool("correct_greek_name", {
       name: "γιώργος",
-      options: { explainConfidence: true }
+      options: { madeUpFlag: true }
     });
     expect(badOption.isError).toBe(true);
-    expect(badOption.content[0].text).toMatch(/explainConfidence/);
+    expect(badOption.content[0].text).toMatch(/madeUpFlag/);
+  });
+
+  test("includes confidence only when explainConfidence is true", () => {
+    const omitted = parseOk(
+      callTool("correct_greek_name", { name: "Πρόδρομος" })
+    );
+    expect(omitted.confidence).toBeUndefined();
+
+    const result = parseOk(
+      callTool("correct_greek_name", {
+        name: "Πρόδρομος",
+        options: { explainConfidence: true }
+      })
+    );
+    expect(result.confidence.signals).toEqual(["name_not_in_dictionary"]);
+    expect(result.confidence.score).toBe(0.8);
   });
 });
 
@@ -142,6 +158,26 @@ describe("convert_greek_name_case", () => {
     expect(result.accusative).toBe("Πρόδρομο");
   });
 
+  test("records vocative_default_branch when explainConfidence is set", () => {
+    const result = parseOk(
+      callTool("convert_greek_name_case", {
+        name: "Πρόδρομος",
+        case: "vocative",
+        explainConfidence: true
+      })
+    );
+    expect(result.vocative).toBe("Πρόδρομε");
+    expect(result.confidence.signals).toContain("vocative_default_branch");
+
+    const plain = parseOk(
+      callTool("convert_greek_name_case", {
+        name: "Πρόδρομος",
+        case: "vocative"
+      })
+    );
+    expect(plain.confidence).toBeUndefined();
+  });
+
   test("rejects an unsupported case", () => {
     const result = callTool("convert_greek_name_case", {
       name: "Γιώργος",
@@ -179,6 +215,18 @@ describe("transliterate_greek_name", () => {
       })
     );
     expect(greeklish.corrected).toBe("Giwrgos");
+  });
+
+  test("records greeklish_ambiguous when explainConfidence is set", () => {
+    const result = parseOk(
+      callTool("transliterate_greek_name", {
+        name: "giorgos",
+        mode: "greeklish-to-greek",
+        explainConfidence: true
+      })
+    );
+    expect(result.corrected).toBe("Γιοργοσ");
+    expect(result.confidence.signals).toContain("greeklish_ambiguous");
   });
 
   test("rejects an unknown mode", () => {
@@ -231,6 +279,17 @@ describe("analyze_greek_name", () => {
     expect(diminutive.diminutive[0].diminutiveType).toBe("άκης");
   });
 
+  test("records gender_unknown when explainConfidence is set", () => {
+    const result = parseOk(
+      callTool("analyze_greek_name", {
+        name: "Ραφαήλ",
+        explainConfidence: true
+      })
+    );
+    expect(result.gender).toBe("unknown");
+    expect(result.confidence.signals).toContain("gender_unknown");
+  });
+
   test("drops the particle and then genders the remaining last token", () => {
     const result = parseOk(
       callTool("analyze_greek_name", { name: "Γιώργος του Νίκου" })
@@ -251,6 +310,17 @@ describe("batch_correct_greek_names", () => {
     expect(result).toHaveLength(2);
     expect(result[0].corrected).toBe("Γιώργος Παπαδόπουλος");
     expect(result[1].corrected).toBe("Μαρια Κωνσταντινου");
+  });
+
+  test("applies explainConfidence to every name in the batch", () => {
+    const result = parseOk(
+      callTool("batch_correct_greek_names", {
+        names: ["Πρόδρομος", "Γιώργος Παπαδόπουλος"],
+        options: { explainConfidence: true }
+      })
+    );
+    expect(result[0].confidence.signals).toEqual(["name_not_in_dictionary"]);
+    expect(result[1].confidence).toEqual({ score: 1, signals: [] });
   });
 
   test("rejects a batch over the cap and a non-string item", () => {
