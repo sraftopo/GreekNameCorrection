@@ -563,5 +563,136 @@ describe('Accent Addition', () => {
     expect(accentCount).toBeGreaterThan(0);
     expect(result.gender).toBe('male');
     expect(result.genitive).toBeDefined();
+    expect(result.confidence).toBeUndefined();
+  });
+});
+
+describe('explainConfidence', () => {
+  const explained = { preserveOriginal: true, explainConfidence: true };
+
+  function explain(name, options) {
+    return GreekNameCorrection(name, Object.assign({}, explained, options));
+  }
+
+  test('adds no field when the option is off and keeps the string return without preserveOriginal', () => {
+    const off = GreekNameCorrection('Γιώργος Παπαδόπουλος', { preserveOriginal: true });
+    const withFlagOff = GreekNameCorrection('Γιώργος Παπαδόπουλος', {
+      preserveOriginal: true,
+      explainConfidence: false
+    });
+    expect(off.confidence).toBeUndefined();
+    expect(JSON.stringify(off)).toBe(JSON.stringify(withFlagOff));
+
+    const plain = GreekNameCorrection('γιώργος παπαδόπουλος');
+    const flagged = GreekNameCorrection('γιώργος παπαδόπουλος', {
+      explainConfidence: true
+    });
+    expect(flagged).toBe(plain);
+    expect(GreekNameCorrection('   ', explained)).toBe('   ');
+  });
+
+  test('scores a known name at 1 with no signals and does not add gender', () => {
+    const result = explain('Γιώργος Παπαδόπουλος');
+    expect(result.confidence).toEqual({ score: 1, signals: [] });
+    expect(result.gender).toBeUndefined();
+    expect(result.corrected).toBe('Γιώργος Παπαδόπουλος');
+  });
+
+  test('records accent_heuristic_fallback only after the vowel heuristic', () => {
+    const heuristic = explain('προδρομος', { addAccents: true });
+    expect(heuristic.confidence.signals).toEqual([
+      'accent_heuristic_fallback',
+      'name_not_in_dictionary'
+    ]);
+    expect(heuristic.confidence.score).toBe(0.55);
+
+    const listed = explain('γιοργος', { addAccents: true });
+    expect(listed.confidence.signals).not.toContain('accent_heuristic_fallback');
+    expect(listed.confidence.signals).not.toContain('name_not_in_dictionary');
+  });
+
+  test('records name_not_in_dictionary for an accented name outside the dictionary', () => {
+    const result = explain('Πρόδρομος');
+    expect(result.confidence.signals).toEqual(['name_not_in_dictionary']);
+    expect(result.confidence.score).toBe(0.8);
+  });
+
+  test('records gender_unknown from the final last token', () => {
+    const result = explain('Ραφαήλ');
+    expect(result.confidence.signals).toEqual(['gender_unknown']);
+    expect(result.confidence.score).toBe(0.85);
+    expect(result.gender).toBeUndefined();
+  });
+
+  test('records vocative_default_branch only for the vowel-count vocative step', () => {
+    const unlisted = explain('Πρόδρομος', { convertToCase: 'vocative' });
+    expect(unlisted.vocative).toBe('Πρόδρομε');
+    expect(unlisted.confidence.signals).toEqual([
+      'name_not_in_dictionary',
+      'vocative_default_branch'
+    ]);
+    expect(unlisted.confidence.score).toBe(0.55);
+
+    const listed = explain('Γιώργος', { convertToCase: 'vocative' });
+    expect(listed.confidence.signals).not.toContain('vocative_default_branch');
+
+    const pavlos = explain('Παύλος', { convertToCase: 'vocative' });
+    expect(pavlos.vocative).toBe('Παύλο');
+    expect(pavlos.confidence.signals).not.toContain('vocative_default_branch');
+
+    const accusative = explain('Πρόδρομος', { convertToCase: 'accusative' });
+    expect(accusative.accusative).toBe('Πρόδρομο');
+    expect(accusative.confidence.signals).not.toContain('vocative_default_branch');
+
+    const full = explain('Γιώργος Παπαδόπουλος', { convertToCase: 'vocative' });
+    expect(full.vocative).toBe('Γιώργο Παπαδόπουλο');
+    expect(full.confidence.signals).not.toContain('vocative_default_branch');
+  });
+
+  test('records greeklish_ambiguous for a forced single letter or an unmapped letter', () => {
+    const ambiguous = explain('giorgos', { transliterate: 'greeklish-to-greek' });
+    expect(ambiguous.corrected).toBe('Γιοργοσ');
+    expect(ambiguous.confidence.signals).toContain('greeklish_ambiguous');
+    expect(ambiguous.confidence.signals).not.toContain('mixed_script');
+
+    const digraph = explain('ou', { transliterate: 'greeklish-to-greek' });
+    expect(digraph.confidence.signals).not.toContain('greeklish_ambiguous');
+
+    const unmapped = explain('u', { transliterate: 'greeklish-to-greek' });
+    expect(unmapped.confidence.signals).toContain('greeklish_ambiguous');
+  });
+
+  test('records mixed_script only when the original contains both scripts', () => {
+    const mixed = explain('A Γιώργος Παπαδόπουλος');
+    expect(mixed.confidence.signals).toContain('mixed_script');
+    expect(mixed.confidence.signals).toContain('name_not_in_dictionary');
+    expect(mixed.confidence.signals).not.toContain('gender_unknown');
+
+    const greeklish = explain('giorgos', { transliterate: 'greeklish-to-greek' });
+    expect(greeklish.confidence.signals).not.toContain('mixed_script');
+  });
+
+  test('records all_caps_input when the original letters are uppercase', () => {
+    const result = explain('ΓΙΩΡΓΟΣ ΠΑΠΑΔΟΠΟΥΛΟΣ');
+    expect(result.corrected).toBe('Γιωργος Παπαδοπουλος');
+    expect(result.confidence.signals).toEqual(['all_caps_input']);
+    expect(result.confidence.score).toBe(0.9);
+  });
+
+  test('CLI -explainConfidence prints the confidence object', () => {
+    const { execFileSync } = require('child_process');
+    const output = execFileSync(process.execPath, [
+      'bin/greek-name-correction.js',
+      '-name', 'GIORGOS',
+      '-preserveOriginal',
+      '-explainConfidence'
+    ], { encoding: 'utf8' });
+    const parsed = JSON.parse(output);
+    expect(parsed.confidence.signals).toEqual([
+      'name_not_in_dictionary',
+      'gender_unknown',
+      'all_caps_input'
+    ]);
+    expect(parsed.confidence.score).toBe(0.55);
   });
 });

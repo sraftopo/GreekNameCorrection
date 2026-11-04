@@ -7,10 +7,19 @@ const {
   greekToGreeklishMap
 } = require("./constants");
 
+const ambiguousGreeklishLetters = {
+  i: true,
+  h: true,
+  y: true,
+  o: true,
+  w: true,
+  e: true
+};
+
 // Transliteration function
-function transliterate(text, mode) {
+function transliterate(text, mode, trace) {
   if (mode === "greeklish-to-greek") {
-    return greeklishToGreek(text);
+    return greeklishToGreek(text, trace);
   } else if (mode === "greek-to-latin") {
     return greekToLatin(text);
   } else if (mode === "greek-to-greeklish") {
@@ -20,7 +29,7 @@ function transliterate(text, mode) {
 }
 
 // Greeklish to Greek conversion
-function greeklishToGreek(text) {
+function greeklishToGreek(text, trace) {
   let result = text.toLowerCase();
 
   // Sort by length (longest first) to handle multi-character combinations
@@ -30,7 +39,20 @@ function greeklishToGreek(text) {
 
   for (const key of sortedKeys) {
     const regex = new RegExp(key, "gi");
+    if (
+      trace &&
+      key.length === 1 &&
+      ambiguousGreeklishLetters[key] &&
+      regex.test(result)
+    ) {
+      trace.ambiguous = true;
+    }
+    regex.lastIndex = 0;
     result = result.replace(regex, greeklishToGreekMap[key]);
+  }
+
+  if (trace && /[A-Za-z]/.test(result)) {
+    trace.ambiguous = true;
   }
 
   return result;

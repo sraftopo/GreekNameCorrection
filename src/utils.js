@@ -421,8 +421,86 @@ function getNameDictionary() {
   return nameDictionary;
 }
 
+function isAccentSkippedToken(part) {
+  const lowerPart = part.toLowerCase();
+  return (
+    isGreekParticle(lowerPart) ||
+    titles.some(
+      (t) =>
+        t.toLowerCase() === lowerPart || t.toLowerCase() + "." === lowerPart
+    )
+  );
+}
+
+function isKnownNameToken(word) {
+  const lowerWord = word.toLowerCase();
+  if (commonCorrections[lowerWord]) return true;
+  const unaccentedLower = removeAccents(word).toLowerCase();
+  return Object.prototype.hasOwnProperty.call(
+    getNameDictionary(),
+    unaccentedLower
+  );
+}
+
+const CONFIDENCE_SIGNALS = [
+  ["accent_heuristic_fallback", 0.25],
+  ["name_not_in_dictionary", 0.2],
+  ["gender_unknown", 0.15],
+  ["vocative_default_branch", 0.25],
+  ["greeklish_ambiguous", 0.15],
+  ["mixed_script", 0.2],
+  ["all_caps_input", 0.1]
+];
+
+function hasLetter(text) {
+  return /[A-Za-zΑ-Ωα-ωΆ-ώΪΫϊϋΐΰ]/.test(text);
+}
+
+function buildConfidence(details) {
+  const fired = {
+    accent_heuristic_fallback: Boolean(details.accentHeuristic),
+    name_not_in_dictionary: false,
+    gender_unknown: detectGender(details.finalName) === "unknown",
+    vocative_default_branch: Boolean(details.vocativeDefault),
+    greeklish_ambiguous: Boolean(details.greeklishAmbiguous),
+    mixed_script:
+      /[A-Za-z]/.test(details.original) &&
+      /[Α-Ωα-ωΆ-ώΪΫϊϋΐΰ]/.test(details.original),
+    all_caps_input:
+      hasLetter(details.original) &&
+      details.original === details.original.toUpperCase()
+  };
+
+  const tokens = String(details.nameBody || "")
+    .split(/\s+/)
+    .filter(Boolean);
+  for (let i = 0; i < tokens.length; i++) {
+    if (isAccentSkippedToken(tokens[i])) continue;
+    if (!isKnownNameToken(tokens[i])) {
+      fired.name_not_in_dictionary = true;
+      break;
+    }
+  }
+
+  const signals = [];
+  let penalty = 0;
+  for (let i = 0; i < CONFIDENCE_SIGNALS.length; i++) {
+    const name = CONFIDENCE_SIGNALS[i][0];
+    const weight = CONFIDENCE_SIGNALS[i][1];
+    if (fired[name]) {
+      signals.push(name);
+      penalty += weight;
+    }
+  }
+
+  return {
+    score: Math.round(Math.max(0, 1 - penalty) * 100) / 100,
+    signals: signals
+  };
+}
+
 // Add accent to a single Greek word (ensures only one accent per word)
-function addAccentsToGreekWord(word) {
+function addAccentsToGreekWord(word, trace) {
   if (!word || word.trim() === "") {
     return word;
   }
@@ -453,6 +531,8 @@ function addAccentsToGreekWord(word) {
     }
     return accented.toLowerCase();
   }
+
+  if (trace) trace.heuristic = true;
 
   // Map of unaccented to accented vowels
   const accentMap = {
@@ -544,7 +624,7 @@ function addAccentsToGreekWord(word) {
 }
 
 // Add accents to firstname and lastname (each word gets only one accent)
-function addAccentsToName(name) {
+function addAccentsToName(name, trace) {
   if (!name || name.trim() === "") {
     return name;
   }
@@ -555,17 +635,15 @@ function addAccentsToName(name) {
 
   for (let i = 0; i < parts.length; i++) {
     const part = parts[i];
-    const lowerPart = part.toLowerCase();
 
     // Skip particles and titles
-    if (isGreekParticle(lowerPart) || 
-        titles.some(t => t.toLowerCase() === lowerPart || t.toLowerCase() + "." === lowerPart)) {
+    if (isAccentSkippedToken(part)) {
       result.push(part);
       continue;
     }
 
     // Add accent to the word
-    const accentedPart = addAccentsToGreekWord(part);
+    const accentedPart = addAccentsToGreekWord(part, trace);
     result.push(accentedPart);
   }
 
@@ -586,5 +664,6 @@ module.exports = {
   splitNameParts,
   addGeneralTitleIfMissing,
   addAccentsToGreekWord,
-  addAccentsToName
+  addAccentsToName,
+  buildConfidence
 };

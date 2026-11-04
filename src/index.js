@@ -25,7 +25,8 @@ const {
   detectGender,
   splitNameParts,
   addGeneralTitleIfMissing,
-  addAccentsToName
+  addAccentsToName,
+  buildConfidence
 } = require("./utils");
 
 /**
@@ -58,7 +59,8 @@ function GreekNameCorrection(input, options = {}) {
     generateSortKey: false,
     statistics: false,
     addGeneralTitle: false,
-    addAccents: false // Add accents to firstname and lastname (one accent per word)
+    addAccents: false, // Add accents to firstname and lastname (one accent per word)
+    explainConfidence: false
   };
 
   const config = { ...defaults, ...options };
@@ -71,6 +73,10 @@ function GreekNameCorrection(input, options = {}) {
 
     let processed = name;
     let extractedTitle = null;
+    const wantConfidence = config.explainConfidence && config.preserveOriginal;
+    let greeklishTrace = null;
+    let accentTrace = null;
+    let vocativeTrace = null;
 
     // Extract and handle titles
     if (config.handleTitles) {
@@ -81,7 +87,12 @@ function GreekNameCorrection(input, options = {}) {
 
     // Transliteration
     if (config.transliterate) {
-      processed = transliterate(processed, config.transliterate);
+      if (wantConfidence && config.transliterate === "greeklish-to-greek") {
+        greeklishTrace = {};
+        processed = transliterate(processed, config.transliterate, greeklishTrace);
+      } else {
+        processed = transliterate(processed, config.transliterate);
+      }
     }
 
     // Remove extra spaces
@@ -131,8 +142,10 @@ function GreekNameCorrection(input, options = {}) {
 
     // Add accents to firstname and lastname (one accent per word)
     if (config.addAccents) {
-      processed = addAccentsToName(processed);
+      if (wantConfidence) accentTrace = {};
+      processed = addAccentsToName(processed, accentTrace);
     }
+    const nameBody = processed;
 
     // Convert to genitive case (before re-attaching title)
     let genitiveForm = null;
@@ -158,7 +171,8 @@ function GreekNameCorrection(input, options = {}) {
     let caseForm = null;
     if (config.convertToCase) {
       if (config.convertToCase === "vocative") {
-        caseForm = convertToVocative(processed, config);
+        if (wantConfidence) vocativeTrace = {};
+        caseForm = convertToVocative(processed, config, vocativeTrace);
       } else if (config.convertToCase === "accusative") {
         caseForm = convertToAccusative(processed, config);
       }
@@ -214,6 +228,17 @@ function GreekNameCorrection(input, options = {}) {
     if (suggestion && config.suggestCorrections) {
       result.wasCorrected = true;
       result.suggestedCorrection = suggestion;
+    }
+
+    if (wantConfidence) {
+      result.confidence = buildConfidence({
+        original: name,
+        nameBody: nameBody,
+        finalName: processed,
+        accentHeuristic: accentTrace && accentTrace.heuristic,
+        vocativeDefault: vocativeTrace && vocativeTrace.defaultBranch,
+        greeklishAmbiguous: greeklishTrace && greeklishTrace.ambiguous
+      });
     }
 
     // If convertToCase is specified and preserveOriginal is false, return the case form

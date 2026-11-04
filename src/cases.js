@@ -164,7 +164,7 @@ function isDiminutivePattern(lowerPart) {
 }
 
 // Resolve -ος ending as "ο", "ε", or null (unchanged) using vocative-style rules
-function resolveOsVocativeStyleEnding(part, index, totalParts, parsedRules) {
+function resolveOsVocativeStyleEnding(part, index, totalParts, parsedRules, trace) {
   const lowerPart = part.toLowerCase();
 
   if (isDiminutivePattern(lowerPart)) {
@@ -193,13 +193,14 @@ function resolveOsVocativeStyleEnding(part, index, totalParts, parsedRules) {
     return null;
   }
 
+  if (trace) trace.defaultBranch = true;
   const syllableCount = (part.match(/[αεηιουωάέήίόύώ]/gi) || []).length;
   return syllableCount <= 2 ? "ο" : "ε";
 }
 
 // Convert to vocative case
 // Converts all name parts (first name and last name), but skips particles
-function convertToVocative(name, config) {
+function convertToVocative(name, config, trace) {
   // Try to load parsed rules from markdown, fallback to hard-coded rules
   const parsedRules = getVocativeRules();
   
@@ -234,7 +235,8 @@ function convertToVocative(name, config) {
         part,
         index,
         totalParts,
-        parsedRules
+        parsedRules,
+        trace
       );
       if (ending) {
         vocative = part.slice(0, -2) + ending;

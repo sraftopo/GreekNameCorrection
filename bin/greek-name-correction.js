@@ -65,6 +65,9 @@ function parseArgs() {
     else if (arg === "-addAccents" || arg === "--addAccents") {
       options.addAccents = true;
     }
+    else if (arg === "-explainConfidence" || arg === "--explainConfidence") {
+      options.explainConfidence = true;
+    }
     else if (arg === "-handleTitles" || arg === "--handleTitles") {
       options.handleTitles = true;
     }
@@ -121,6 +124,7 @@ Options:
   -statistics                       Generate name statistics
   -addGeneralTitle                  Add general title (κ./κα) based on gender
   -addAccents                       Add accents to firstname and lastname (one accent per word)
+  -explainConfidence                With -preserveOriginal, add a confidence score and signals
   -handleTitles                     Handle titles (default: true)
   -handleParticles                  Handle Greek particles (default: true)
   -strictMode                       Enable strict mode

@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - License for this and later releases is CC BY-ND 4.0. Versions through 2.2.3 remain MIT.
 
+### Added
+- Opt-in `explainConfidence` (with `preserveOriginal`) adds `confidence.score` and `confidence.signals`. Output is unchanged when the option is off.
+
 ## [2.2.3] - 2026-05-20
 
 ### 📖 Documentation
