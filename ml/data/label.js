@@ -2,25 +2,26 @@
 
 const GreekNameCorrection = require("../../index.js");
 
-function labelName(clean) {
-  const base = GreekNameCorrection(clean, {
+function labelName(clean, extra) {
+  const overlay = extra || {};
+  const base = GreekNameCorrection(clean, Object.assign({
     preserveOriginal: true,
     detectGender: true,
     splitNames: true,
     handleTitles: true,
     generateSortKey: true,
     convertToGenitive: true
-  });
-  const vocative = GreekNameCorrection(clean, {
+  }, overlay));
+  const vocative = GreekNameCorrection(clean, Object.assign({
     preserveOriginal: true,
     handleTitles: true,
     convertToCase: "vocative"
-  });
-  const accusative = GreekNameCorrection(clean, {
+  }, overlay));
+  const accusative = GreekNameCorrection(clean, Object.assign({
     preserveOriginal: true,
     handleTitles: true,
     convertToCase: "accusative"
-  });
+  }, overlay));
 
   return {
     corrected: base.corrected,
