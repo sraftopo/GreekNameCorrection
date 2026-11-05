@@ -94,6 +94,44 @@ const geographicalSurnames = [
   'Αλεξανδρινός', 'Σμυρναίος', 'Κωνσταντινουπολίτης', 'Τραπεζούντιος', 'Σινώπης'
 ];
 
+const maleDiminutives = ['άκης', 'άκι', 'ούλης', 'ούλη', 'ίτσας', 'ής'];
+const femaleDiminutives = ['ούλα', 'ίτσα', 'ώ', 'ούδα', 'άκι'];
+
+const extraMaleNames = [
+  'Αχιλλέας', 'Βύρων', 'Γαλανός', 'Δαρείος', 'Ερμής', 'Ζευς', 'Θησέας',
+  'Ικάρος', 'Κάρολος', 'Λοΐζος', 'Μένανδρος', 'Νίκανδρος', 'Ξέρξης',
+  'Οδυσσέας', 'Πρωτέας', 'Ρομπέρτος', 'Σολομών', 'Τηλέμαχος', 'Φαίδων',
+  'Ψυχάρης', 'Ωνάσης', 'Αγησίλαος', 'Βαλέριος', 'Γοργίας', 'Δημοσθένης',
+  'Επαμεινώνδας', 'Ζηνόδοτος', 'Θουκυδίδης', 'Ισοκράτης', 'Κλεισθένης',
+  'Λυσίας', 'Μενέλαος', 'Νεστορίδης', 'Οδυσσέας', 'Πυθαγόρας',
+  'Σόλων', 'Τελαμών', 'Φειδίας', 'Χείρων', 'Αινείας', 'Βελισάριος'
+];
+
+const extraFemaleNames = [
+  'Αλκμήνη', 'Βερονίκη', 'Γαλήνη', 'Δωροθέα', 'Ευρυδίκη', 'Ζέφυρα',
+  'Θεοφανώ', 'Ιόλη', 'Καλυψώ', 'Λυδία', 'Μαριάννα', 'Νεφθύς', 'Οφηλία',
+  'Πολύμνια', 'Ραϊσα', 'Σαπφώ', 'Τελέμαχη', 'Φοίβη', 'Χαρίτη', 'Αίγλη',
+  'Βιολέττα', 'Γοργόνη', 'Δρυάδα', 'Εριφύλη', 'Ζηνοβία', 'Θέμις',
+  'Ιφιμέδεια', 'Κλυταιμνήστρα', 'Λαοδίκη', 'Μαιάνδρη', 'Νιόβη', 'Ομήρα',
+  'Πασιφάη', 'Σεμίραμις', 'Τάμυρα', 'Φιλομήλα', 'Χρυσηίς', 'Αριάδνη'
+];
+
+module.exports = {
+  maleFirstNames,
+  femaleFirstNames,
+  extraMaleNames,
+  extraFemaleNames,
+  surnameRoots,
+  surnamePatronymicSuffixes,
+  surnameCompoundPrefixes,
+  occupationalSurnames,
+  geographicalSurnames,
+  maleDiminutives,
+  femaleDiminutives
+};
+
+// The CSV writer stays a direct-run script. Requiring this file only exposes the lists.
+if (require.main === module) {
 // Generate names
 const names = [];
 
@@ -117,7 +155,6 @@ femaleFirstNames.forEach(name => {
 });
 
 // Generate diminutives for male names
-const maleDiminutives = ['άκης', 'άκι', 'ούλης', 'ούλη', 'ίτσας', 'ής'];
 maleFirstNames.slice(0, 30).forEach(name => {
   const root = name.slice(0, -2);
   maleDiminutives.forEach(suffix => {
@@ -134,7 +171,6 @@ maleFirstNames.slice(0, 30).forEach(name => {
 });
 
 // Generate diminutives for female names
-const femaleDiminutives = ['ούλα', 'ίτσα', 'ώ', 'ούδα', 'άκι'];
 femaleFirstNames.slice(0, 30).forEach(name => {
   const root = name.slice(0, -1);
   femaleDiminutives.forEach(suffix => {
@@ -229,25 +265,6 @@ if (names.length < 5000) {
 }
 
 // Fill up to 5000 with more variations
-const extraMaleNames = [
-  'Αχιλλέας', 'Βύρων', 'Γαλανός', 'Δαρείος', 'Ερμής', 'Ζευς', 'Θησέας',
-  'Ικάρος', 'Κάρολος', 'Λοΐζος', 'Μένανδρος', 'Νίκανδρος', 'Ξέρξης',
-  'Οδυσσέας', 'Πρωτέας', 'Ρομπέρτος', 'Σολομών', 'Τηλέμαχος', 'Φαίδων',
-  'Ψυχάρης', 'Ωνάσης', 'Αγησίλαος', 'Βαλέριος', 'Γοργίας', 'Δημοσθένης',
-  'Επαμεινώνδας', 'Ζηνόδοτος', 'Θουκυδίδης', 'Ισοκράτης', 'Κλεισθένης',
-  'Λυσίας', 'Μενέλαος', 'Νεστορίδης', 'Οδυσσέας', 'Πυθαγόρας',
-  'Σόλων', 'Τελαμών', 'Φειδίας', 'Χείρων', 'Αινείας', 'Βελισάριος'
-];
-
-const extraFemaleNames = [
-  'Αλκμήνη', 'Βερονίκη', 'Γαλήνη', 'Δωροθέα', 'Ευρυδίκη', 'Ζέφυρα',
-  'Θεοφανώ', 'Ιόλη', 'Καλυψώ', 'Λυδία', 'Μαριάννα', 'Νεφθύς', 'Οφηλία',
-  'Πολύμνια', 'Ραϊσα', 'Σαπφώ', 'Τελέμαχη', 'Φοίβη', 'Χαρίτη', 'Αίγλη',
-  'Βιολέττα', 'Γοργόνη', 'Δρυάδα', 'Εριφύλη', 'Ζηνοβία', 'Θέμις',
-  'Ιφιμέδεια', 'Κλυταιμνήστρα', 'Λαοδίκη', 'Μαιάνδρη', 'Νιόβη', 'Ομήρα',
-  'Πασιφάη', 'Σεμίραμις', 'Τάμυρα', 'Φιλομήλα', 'Χρυσηίς', 'Αριάδνη'
-];
-
 while (names.length < 5000) {
   // Add extra first names
   if (extraMaleNames.length > 0) {
@@ -302,3 +319,4 @@ fs.writeFileSync('/home/claude/greek_names_5000.csv', csv, 'utf8');
 console.log(`Generated ${names.length} Greek names`);
 console.log(`First names: ${names.filter(n => n.type === 'first').length}`);
 console.log(`Surnames: ${names.filter(n => n.type === 'surname').length}`);
+}

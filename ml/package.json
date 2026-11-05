@@ -1,0 +1,9 @@
+{
+  "name": "greek-name-correction-data",
+  "private": true,
+  "description": "Synthetic data generator for greek-name-correction. Not published.",
+  "scripts": {
+    "generate": "node data/generate.js",
+    "test": "node --test data/corrupt.test.js"
+  }
+}

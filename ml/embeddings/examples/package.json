@@ -1,0 +1,8 @@
+{
+  "name": "greek-name-correction-embeddings-example",
+  "private": true,
+  "description": "Local matcher for the Phase 4 ONNX name embedding. Not published.",
+  "dependencies": {
+    "@huggingface/transformers": "^3.7.0"
+  }
+}

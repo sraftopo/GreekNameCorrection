@@ -1,0 +1,10 @@
+# Caps keep the Optimum 1.x exporter (optimum.exporters.onnx).
+# That exporter needs Transformers 4.x (huggingface-hub 0.x) and Torch < 2.9.
+# Torch 2.9 dropped the torch.onnx symbols Optimum 1.27 imports.
+# datasets 5.1 requires huggingface-hub 1.x, so it is excluded.
+sentence-transformers>=3.3.0,<6
+torch>=2.2.0,<2.9
+datasets>=2.19.0,<5.1
+optimum[onnxruntime]>=1.23.0,<2
+transformers>=4.41.0,<4.54
+onnxruntime>=1.17.0
